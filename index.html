@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Семейный бюджет</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR (десктоп) -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon">💰</div>
+                <div class="sidebar-logo-text">Семейный бюджет</div>
+            </div>
+            
+            <button class="sidebar-btn active" data-screen="home" onclick="switchScreen('home')">
+                <span class="sidebar-btn-icon">🏠</span>
+                <span class="sidebar-btn-text">Главная</span>
+            </button>
+            <button class="sidebar-btn" data-screen="stats" onclick="switchScreen('stats')">
+                <span class="sidebar-btn-icon">📊</span>
+                <span class="sidebar-btn-text">Статистика</span>
+            </button>
+            <button class="sidebar-btn" data-screen="history" onclick="switchScreen('history')">
+                <span class="sidebar-btn-icon">📜</span>
+                <span class="sidebar-btn-text">История</span>
+            </button>
+            <button class="sidebar-btn" data-screen="settings" onclick="switchScreen('settings')">
+                <span class="sidebar-btn-icon">⚙️</span>
+                <span class="sidebar-btn-text">Настройки</span>
+            </button>
+            <button class="sidebar-btn" data-screen="users" onclick="switchScreen('users')">
+                <span class="sidebar-btn-icon">👥</span>
+                <span class="sidebar-btn-text">Участники</span>
+            </button>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-section-title">Активный пользователь</div>
+                <div class="sidebar-user-list" id="sidebarUserList">
+                    <!-- JS заполнит динамически -->
+                </div>
+            </div>
+        </nav>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- ===== ЭКРАН: СТАРТОВЫЙ (ВЫБОР СЕМЬИ) ===== -->
+            <div class="screen active" id="screen-start">
+                <div class="start-container">
+                    <div class="start-card">
+                        <div class="start-icon">💰</div>
+                        <h1 class="start-title">Семейный бюджет</h1>
+                        <p class="start-subtitle">Синхронизация между устройствами</p>
+                        
+                        <div class="start-buttons">
+                            <button class="btn btn-primary btn-full btn-large" onclick="showCreateFamilyScreen()">
+                                ➕ Создать новую семью
+                            </button>
+                            <button class="btn btn-secondary btn-full btn-large" onclick="showJoinFamilyScreen()">
+                                🔑 У меня уже есть код
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ЭКРАН: СОЗДАНИЕ СЕМЬИ ===== -->
+            <div class="screen" id="screen-create-family">
+                <div class="start-container">
+                    <div class="start-card">
+                        <div class="start-icon">🏠</div>
+                        <h1 class="start-title">Создание семьи</h1>
+                        <p class="start-subtitle">Введите название для генерации кода</p>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Название (латиницей)</label>
+                            <input type="text" class="form-input" id="familyNameInput" placeholder="Например: ivanov" maxlength="20">
+                        </div>
+                        
+                        <button class="btn btn-primary btn-full btn-large" onclick="createFamily()" style="margin-top: 16px;">
+                            Создать семью →
+                        </button>
+                        <button class="btn btn-secondary btn-full" onclick="showStartScreen()" style="margin-top: 8px;">
+                            ← Назад
+                        </button>
+                        
+                        <div id="createFamilyError" class="error-message"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ЭКРАН: КОД СЕМЬИ СОЗДАН ===== -->
+            <div class="screen" id="screen-family-created">
+                <div class="start-container">
+                    <div class="start-card">
+                        <div class="start-icon">✅</div>
+                        <h1 class="start-title">Семья создана!</h1>
+                        <p class="start-subtitle">Сохраните этот код и отправьте участникам</p>
+                        
+                        <div class="family-code-display">
+                            <div class="family-code" id="familyCodeDisplay">ivanov-x7k9m2</div>
+                            <button class="btn btn-secondary" onclick="copyFamilyCode()">📋 Скопировать</button>
+                        </div>
+                        
+                        <div class="family-code-info">
+                            <p>📱 Отправьте этот код второму участнику</p>
+                            <p>💾 Код автоматически сохранён на этом устройстве</p>
+                        </div>
+                        
+                        <button class="btn btn-primary btn-full btn-large" onclick="enterFamily()" style="margin-top: 16px;">
+                            Войти в приложение →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ЭКРАН: ВХОД ПО КОДУ ===== -->
+            <div class="screen" id="screen-join-family">
+                <div class="start-container">
+                    <div class="start-card">
+                        <div class="start-icon">🔑</div>
+                        <h1 class="start-title">Вход в семью</h1>
+                        <p class="start-subtitle">Введите код, который вам отправили</p>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Код семьи</label>
+                            <input type="text" class="form-input" id="familyCodeInput" placeholder="Например: ivanov-x7k9m2" maxlength="50">
+                        </div>
+                        
+                        <button class="btn btn-primary btn-full btn-large" onclick="joinFamily()" style="margin-top: 16px;">
+                            Присоединиться →
+                        </button>
+                        <button class="btn btn-secondary btn-full" onclick="showStartScreen()" style="margin-top: 8px;">
+                            ← Назад
+                        </button>
+                        
+                        <div id="joinFamilyError" class="error-message"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ЭКРАН: ВЫБОР ПОЛЬЗОВАТЕЛЯ ===== -->
+            <div class="screen" id="screen-select-user">
+                <div class="start-container">
+                    <div class="start-card">
+                        <div class="start-icon">👋</div>
+                        <h1 class="start-title">Добро пожаловать!</h1>
+                        <p class="start-subtitle">Выберите пользователя или создайте нового</p>
+                        
+                        <div class="user-select-list" id="userSelectList">
+                            <!-- JS заполнит динамически -->
+                        </div>
+                        
+                        <div class="user-select-divider">
+                            <span>или</span>
+                        </div>
+                        
+                        <button class="btn btn-secondary btn-full btn-large" onclick="showNewUserForm()">
+                            Создать нового пользователя
+                        </button>
+                        
+                        <button class="btn btn-link" onclick="leaveFamily()" style="margin-top: 16px; color: var(--text-secondary);">
+                            ← Выйти из семьи
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ЭКРАН: ОНБОРДИНГ (НОВЫЙ ПОЛЬЗОВАТЕЛЬ) ===== -->
+            <div class="screen" id="screen-onboarding">
+                <div class="onboarding-container">
+                    <div class="onboarding-card">
+                        <div class="onboarding-icon">👤</div>
+                        <h1 class="onboarding-title">Новый пользователь</h1>
+                        <p class="onboarding-subtitle">Введите ваше имя</p>
+                        
+                        <div class="onboarding-step">
+                            <label class="form-label">Ваше имя</label>
+                            <input type="text" class="form-input" id="onboardingUserName" placeholder="Например: Александр" maxlength="20">
+                            <button class="btn btn-primary btn-full" onclick="completeOnboarding()" style="margin-top: 16px;">
+                                Создать →
+                            </button>
+                            <button class="btn btn-secondary btn-full" onclick="showSelectUserScreen()" style="margin-top: 8px;">
+                                ← Назад к списку
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ===== ЭКРАН: ГЛАВНАЯ ===== -->
+            <div class="screen" id="screen-home">
+                <div class="container">
+                    <div class="header">
+                        <div class="header-top">
+                            <div class="header-content">
+                                <h1>Общий баланс наличных</h1>
+                                <div class="total-balance" id="totalBalance">0 ₽</div>
+                            </div>
+                            <div class="header-controls-mobile">
+                                <div class="mobile-user-switcher" id="mobileUserSwitcher">
+                                    <!-- JS заполнит динамически -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="balance-breakdown" id="balanceBreakdown">
+                            <div class="balance-item me">
+                                <div class="balance-item-label" id="userBalanceLabel">Мои конверты</div>
+                                <div class="balance-item-value" id="userBalance">0 ₽</div>
+                            </div>
+                            <div class="balance-item shared">
+                                <div class="balance-item-label">Общие конверты</div>
+                                <div class="balance-item-value" id="sharedBalance">0 ₽</div>
+                            </div>
+                            <div class="balance-item bank">
+                                <div class="balance-item-label">Не распределено</div>
+                                <div class="balance-item-value" id="bankBalance">0 ₽</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="unused-bills" id="unusedBillsSection">
+                        <div class="unused-bills-header"><h3>🏦 Банк неиспользованных купюр</h3></div>
+                        <div class="unused-bills-total" id="unusedTotal">0 ₽</div>
+                        <div class="unused-bills-composition" id="unusedComposition"></div>
+                    </div>
+
+                    <div class="envelopes-section">
+                        <div class="section-title">
+                            <span>📁</span> Конверты <span id="currentUserLabel" style="color: var(--text-secondary); font-size: 13px; font-weight: 500;">(Активен: Я)</span>
+                        </div>
+                        <div id="envelopesContainer">
+                            <div class="empty-state" id="emptyState">
+                                <div class="empty-state-icon"></div>
+                                <p>У вас пока нет конвертов.<br>Создайте первый, чтобы начать вести бюджет.</p>
+                                <button class="btn btn-primary" onclick="openCreateEnvelope()">Создать конверт</button>
+                            </div>
+                            <div class="envelopes-grid" id="envelopesGrid"></div>
+                            <button class="btn btn-primary create-envelope-btn" id="createEnvelopeBtn" onclick="openCreateEnvelope()" style="display: none;">Создать конверт</button>
+                        </div>
+                    </div>
+                </div>
+                <button class="fab" id="fabDistribution" onclick="openDistribution()">💰 Разложить</button>
+            </div>
+
+            <!-- ===== ЭКРАН: СТАТИСТИКА ===== -->
+            <div class="screen" id="screen-stats">
+                <div class="screen-header">
+                    <h2>📊 Статистика</h2>
+                </div>
+                <div class="screen-content">
+                    <div class="stats-filters">
+                        <div class="filter-section">
+                            <div class="filter-label">📅 Период</div>
+                            <div class="time-filter" id="timeFilter">
+                                <button class="time-filter-btn active" onclick="setTimeFilter('all', this)">Всё</button>
+                                <button class="time-filter-btn" onclick="setTimeFilter('today', this)">Сегодня</button>
+                                <button class="time-filter-btn" onclick="setTimeFilter('7days', this)">7 дней</button>
+                                <button class="time-filter-btn" onclick="setTimeFilter('30days', this)">30 дней</button>
+                                <button class="time-filter-btn" onclick="setTimeFilter('month', this)">Месяц</button>
+                                <button class="time-filter-btn" onclick="setTimeFilter('year', this)">Год</button>
+                            </div>
+                            <div class="date-range" id="dateRangeInputs">
+                                <div class="form-group">
+                                    <label class="form-label">С даты</label>
+                                    <input type="date" class="form-input" id="dateFrom" onchange="applyCustomDateRange()">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">По дату</label>
+                                    <input type="date" class="form-input" id="dateTo" onchange="applyCustomDateRange()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="filter-section">
+                            <div class="filter-label">👥 Пользователь</div>
+                            <div class="user-filter" id="userFilter">
+                                <!-- JS заполнит динамически -->
+                            </div>
+                        </div>
+
+                        <div class="filter-section">
+                            <div class="filter-label">📁 Тип конверта</div>
+                            <div class="envelope-type-filter" id="envelopeTypeFilter">
+                                <!-- JS заполнит динамически -->
+                            </div>
+                        </div>
+
+
+                        <div class="filter-section">
+                            <div class="filter-label">📁 Конверты</div>
+                            <div class="envelope-multiselect">
+                                <button class="multiselect-toggle" onclick="toggleEnvelopeMultiselect()">
+                                    <span id="envelopeFilterLabel">Все конверты</span>
+                                    <span class="multiselect-arrow">▼</span>
+                                </button>
+                                <div class="multiselect-dropdown" id="envelopeDropdown">
+                                    <div class="multiselect-actions">
+                                        <button class="multiselect-action-btn" onclick="selectAllEnvelopes()">Выбрать все</button>
+                                        <button class="multiselect-action-btn" onclick="deselectAllEnvelopes()">Снять все</button>
+                                    </div>
+                                    <div class="multiselect-list" id="envelopeMultiselectList"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="kpi-grid" id="kpiGrid">
+                        <div class="kpi-card">
+                            <div class="kpi-label">Поступления</div>
+                            <div class="kpi-value income" id="kpiIncome">0 ₽</div>
+                            <div class="kpi-trend" id="kpiIncomeTrend"></div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Расходы</div>
+                            <div class="kpi-value expense" id="kpiExpense">0 ₽</div>
+                            <div class="kpi-trend" id="kpiExpenseTrend"></div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Баланс</div>
+                            <div class="kpi-value neutral" id="kpiBalance">0 ₽</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Переводы</div>
+                            <div class="kpi-value neutral" id="kpiTransfers">0</div>
+                        </div>
+                    </div>
+                    <div class="kpi-grid hidden" id="kpiGridExtended">
+                        <div class="kpi-card">
+                            <div class="kpi-label">Операций</div>
+                            <div class="kpi-value neutral" id="kpiOperations">0</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Средний чек</div>
+                            <div class="kpi-value neutral" id="kpiAvgCheck">0 ₽</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Макс. операция</div>
+                            <div class="kpi-value neutral" id="kpiMaxOp">0 ₽</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Активных дней</div>
+                            <div class="kpi-value neutral" id="kpiActiveDays">0</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary btn-full" id="toggleKpiBtn" onclick="toggleKpiExtended()" style="margin-top: 12px;">
+                        Показать ещё ↓
+                    </button>
+
+                    <div class="chart-section">
+                        <div class="chart-header">
+                            <div class="chart-title"> Динамика баланса</div>
+                            <select class="form-select" id="balanceChartEnvelope" onchange="renderBalanceChart()" style="width: auto; min-width: 200px;">
+                                <option value="all">Общий баланс</option>
+                            </select>
+                        </div>
+                        <div class="stats-chart-container">
+                            <canvas id="balanceChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-section">
+                        <div class="chart-title"> Расходы по дням</div>
+                        <div class="stats-chart-container">
+                            <canvas id="dailyExpenseChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-section">
+                        <div class="chart-title"> Структура расходов по конвертам</div>
+                        <div class="stats-chart-container">
+                            <canvas id="expenseStructureChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ЭКРАН: ИСТОРИЯ ===== -->
+            <div class="screen" id="screen-history">
+                <div class="screen-header">
+                    <h2> История операций</h2>
+                </div>
+                <div class="screen-content">
+                    <div class="stats-filters">
+                        <div class="filter-section">
+                            <div class="filter-label">📅 Период</div>
+                            <div class="time-filter" id="timeFilterHistory">
+                                <button class="time-filter-btn active" onclick="setTimeFilterHistory('all', this)">Всё</button>
+                                <button class="time-filter-btn" onclick="setTimeFilterHistory('today', this)">Сегодня</button>
+                                <button class="time-filter-btn" onclick="setTimeFilterHistory('7days', this)">7 дней</button>
+                                <button class="time-filter-btn" onclick="setTimeFilterHistory('30days', this)">30 дней</button>
+                                <button class="time-filter-btn" onclick="setTimeFilterHistory('month', this)">Месяц</button>
+                                <button class="time-filter-btn" onclick="setTimeFilterHistory('year', this)">Год</button>
+                            </div>
+                            <div class="date-range" id="dateRangeInputsHistory">
+                                <div class="form-group">
+                                    <label class="form-label">С даты</label>
+                                    <input type="date" class="form-input" id="dateFromHistory" onchange="applyCustomDateRangeHistory()">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">По дату</label>
+                                    <input type="date" class="form-input" id="dateToHistory" onchange="applyCustomDateRangeHistory()">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="filter-section">
+                            <div class="filter-label">👥 Пользователь</div>
+                            <div class="user-filter" id="userFilterHistory">
+                                <!-- JS заполнит динамически -->
+                            </div>
+                        </div>
+                        <div class="filter-section">
+                            <div class="filter-label">🏷️ Тип операции</div>
+                            <div class="operation-type-filter">
+                                <button class="type-filter-btn active" data-type="all" onclick="setOperationTypeFilter('all', this)">Все</button>
+                                <button class="type-filter-btn" data-type="put" onclick="setOperationTypeFilter('put', this)">➕ Пополнения</button>
+                                <button class="type-filter-btn" data-type="take" onclick="setOperationTypeFilter('take', this)">➖ Траты</button>
+                                <button class="type-filter-btn" data-type="transfer" onclick="setOperationTypeFilter('transfer', this)">🔄 Переводы</button>
+                                <button class="type-filter-btn" data-type="manual" onclick="setOperationTypeFilter('manual', this)">🔧 Технические</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="history-summary">
+                        <div class="summary-card">
+                            <div class="summary-label">Всего операций</div>
+                            <div class="summary-value" id="historyTotalOps">0</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Пополнений</div>
+                            <div class="summary-value income" id="historyPutCount">0</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Трат</div>
+                            <div class="summary-value expense" id="historyTakeCount">0</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Переводов</div>
+                            <div class="summary-value neutral" id="historyTransferCount">0</div>
+                        </div>
+                    </div>
+
+                    <div class="history-search">
+                        <input type="text" class="form-input" id="historySearchInput" placeholder="🔍 Поиск по комментариям и названиям..." oninput="renderHistoryMainList()">
+                    </div>
+
+                    <div class="history-list-main" id="historyMainList"></div>
+                </div>
+            </div>
+
+            <!-- ===== ЭКРАН: НАСТРОЙКИ ===== -->
+            <div class="screen" id="screen-settings">
+                <div class="screen-header">
+                    <h2>⚙️ Настройки</h2>
+                </div>
+                <div class="screen-content">
+                    <div class="settings-page-section">
+                        <h3>👨‍👩‍👧 Ваша семья</h3>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+                            Код семьи: <strong id="settingsFamilyCode">-</strong>
+                        </p>
+                        <button class="btn btn-secondary btn-full" onclick="leaveFamily()">
+                            🚪 Выйти из семьи
+                        </button>
+                    </div>
+
+                    <div class="settings-page-section">
+                        <h3>💾 Резервное копирование</h3>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">Сохраните данные в файл или загрузите из файла</p>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="exportData()">📥 Скачать JSON</button>
+                            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📤 Загрузить JSON</button>
+                            <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                        </div>
+                    </div>
+
+                    <div class="settings-page-section danger-zone">
+                        <h3>⚠️ Опасная зона</h3>
+                        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 12px;">Все данные будут безвозвратно удалены. Это действие нельзя отменить.</p>
+                        <button class="btn btn-danger btn-full" onclick="clearAllData()">🗑️ Стереть все данные</button>
+                    </div>
+
+                    <div id="settingsMessage" class="success-message"></div>
+                </div>
+            </div>
+
+            <!-- ===== ЭКРАН: УЧАСТНИКИ ===== -->
+            <div class="screen" id="screen-users">
+                <div class="screen-header">
+                    <h2>👥 Участники</h2>
+                </div>
+                <div class="screen-content">
+                    <div class="users-list" id="usersList">
+                        <!-- JS заполнит динамически -->
+                    </div>
+                    
+                    <button class="btn btn-primary btn-full" onclick="openAddUserModal()" style="margin-top: 16px;">
+                        ➕ Добавить участника
+                    </button>
+
+                    <div id="usersMessage" class="success-message"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- TAB BAR (мобильный) -->
+        <nav class="tab-bar">
+            <button class="tab-btn active" data-screen="home" onclick="switchScreen('home')">
+                <span class="tab-btn-icon">🏠</span>
+                <span class="tab-btn-text">Главная</span>
+            </button>
+            <button class="tab-btn" data-screen="stats" onclick="switchScreen('stats')">
+                <span class="tab-btn-icon">📊</span>
+                <span class="tab-btn-text">Статистика</span>
+            </button>
+            <button class="tab-btn" data-screen="history" onclick="switchScreen('history')">
+                <span class="tab-btn-icon">📜</span>
+                <span class="tab-btn-text">История</span>
+            </button>
+            <button class="tab-btn" data-screen="settings" onclick="switchScreen('settings')">
+                <span class="tab-btn-icon">️⚙️</span>
+                <span class="tab-btn-text">Настройки</span>
+            </button>
+            <button class="tab-btn" data-screen="users" onclick="switchScreen('users')">
+                <span class="tab-btn-icon">👥</span>
+                <span class="tab-btn-text">Участники</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- МОДАЛКА: ДОБАВИТЬ/РЕДАКТИРОВАТЬ ПОЛЬЗОВАТЕЛЯ -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="userModalTitle">👤 Добавить участника</div>
+                <button class="modal-close" onclick="closeModal('userModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Имя</label>
+                    <input type="text" class="form-input" id="userNameInput" placeholder="Например: Мария" maxlength="20">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Эмодзи</label>
+                    <div class="emoji-picker" id="userEmojiPicker"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Цвет</label>
+                    <div class="color-picker" id="userColorPicker"></div>
+                </div>
+                <div id="userModalError" class="error-message"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('userModal')">Отмена</button>
+                <button class="btn btn-primary" onclick="saveUser()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА: СОЗДАТЬ/РЕДАКТИРОВАТЬ КОНВЕРТ -->
+    <div class="modal-overlay" id="envelopeModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="envelopeModalTitle">📁 Создать конверт</div>
+                <button class="modal-close" onclick="closeModal('envelopeModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label class="form-label">Иконка</label><div class="emoji-picker" id="envelopeEmojiPicker"></div></div>
+                <div class="form-group"><label class="form-label">Название</label><input type="text" class="form-input" id="envelopeName" placeholder="Например: Продукты"></div>
+                
+                <div class="form-group">
+                    <label class="form-label">Тип конверта</label>
+                    <div class="envelope-type-toggle">
+                        <button class="type-toggle-btn active" data-type="personal" onclick="setEnvelopeType('personal')"> Личный</button>
+                        <button class="type-toggle-btn" data-type="shared" onclick="setEnvelopeType('shared')">👥 Общий</button>
+                    </div>
+                </div>
+
+                <div id="envelopePercentContainer">
+                    <!-- JS заполнит динамически -->
+                </div>
+
+                <div class="percent-warning" id="percentWarning">
+                    <span>Сумма процентов превышает 100%. Сейчас: <span class="percent-total" id="percentTotal">0%</span></span>
+                </div>
+
+                <div class="form-group"><label class="form-label">Округление</label><select class="form-select" id="envelopeRoundDirection"><option value="standard">Стандартное</option><option value="up">Всегда вверх</option><option value="down">Всегда вниз</option></select></div>
+                <div class="form-group"><label class="form-label">Шаг округления</label><select class="form-select" id="envelopeRoundStep"><option value="100">100 ₽</option><option value="50">50 ₽</option><option value="500">500 ₽</option><option value="1000">1 000 ₽</option><option value="5000">5 000 ₽</option></select></div>
+                <div class="form-group"><label class="form-label">Цель накопления (необязательно)</label><input type="number" class="form-input" id="envelopeGoal" min="0" placeholder="Например: 50000"></div>
+
+                <!-- НОВЫЕ ПОЛЯ: Приоритетный номинал и Приоритетный конверт -->
+                <div class="form-group">
+                    <label class="form-label">Приоритетный номинал</label>
+                    <select class="form-select" id="envelopePriorityDenom">
+                        <option value="">Любой номинал</option>
+                    </select>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">
+                        Алгоритм будет стараться класть в этот конверт купюры выбранного номинала
+                    </div>
+                </div>
+
+                <div class="form-group" id="priorityEnvelopeContainer" style="display: none;">
+                    <label class="form-label">Приоритетный конверт</label>
+                    <button class="btn-priority-toggle" id="priorityEnvelopeBtn" onclick="toggleUserPriorityEnvelope()">
+                        Сделать приоритетным
+                    </button>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">
+                        Этот конверт будет наполняться первым при распределении
+                    </div>
+                </div>
+                <!-- КОНЕЦ НОВЫХ ПОЛЕЙ -->
+
+                <div class="form-group"><label class="form-label">Купюры в конверте</label><div id="envelopeBills"></div></div>
+                <div id="envelopeError" class="error-message"></div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('envelopeModal')">Отмена</button>
+                <button class="btn btn-primary" onclick="saveEnvelope()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА: ДЕТАЛИ КОНВЕРТА -->
+    <div class="modal-overlay" id="envelopeDetailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="detailEnvelopeTitle">📁 Конверт</div>
+                <button class="modal-close" onclick="closeModal('envelopeDetailModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label class="form-label">Название</label><input type="text" class="form-input" id="detailEnvelopeNameInput"></div>
+                <div class="form-group"><label class="form-label">Общая сумма</label><div class="total-balance" id="detailEnvelopeAmount" style="font-size: 32px; color: var(--text-primary);">0 ₽</div></div>
+                
+                <div class="form-group">
+                    <label class="form-label">Тип: <span id="detailEnvelopeTypeLabel">Личный</span></label>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Тип конверта нельзя изменить после создания</div>
+                </div>
+
+                <div id="detailEnvelopePercentContainer">
+                    <!-- JS заполнит динамически -->
+                </div>
+
+                <div class="percent-warning" id="detailPercentWarning">
+                    <span>Сумма процентов превышает 100%. Сейчас: <span class="percent-total" id="detailPercentTotal">0%</span></span>
+                </div>
+
+                <div class="form-group"><label class="form-label">Округление</label><select class="form-select" id="detailEnvelopeRoundDirection"><option value="standard">Стандартное</option><option value="up">Всегда вверх</option><option value="down">Всегда вниз</option></select></div>
+                <div class="form-group"><label class="form-label">Шаг округления</label><select class="form-select" id="detailEnvelopeRoundStep"><option value="100">100 ₽</option><option value="50">50 ₽</option><option value="500">500 ₽</option><option value="1000">1 000 ₽</option><option value="5000">5 000 ₽</option></select></div>
+                <div class="form-group"><label class="form-label">Цель накопления (необязательно)</label><input type="number" class="form-input" id="detailEnvelopeGoal" min="0" placeholder="Например: 50000"></div>
+
+                <!-- НОВЫЕ ПОЛЯ: Приоритетный номинал и Приоритетный конверт -->
+                <div class="form-group">
+                    <label class="form-label">Приоритетный номинал</label>
+                    <select class="form-select" id="detailPriorityDenom">
+                        <option value="">Любой номинал</option>
+                    </select>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">
+                        Алгоритм будет стараться класть в этот конверт купюры выбранного номинала
+                    </div>
+                </div>
+
+                <div class="form-group" id="detailPriorityEnvelopeContainer" style="display: none;">
+                    <label class="form-label">Приоритетный конверт</label>
+                    <button class="btn-priority-toggle" id="detailPriorityEnvelopeBtn" onclick="toggleDetailUserPriorityEnvelope()">
+                        Сделать приоритетным
+                    </button>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">
+                        Этот конверт будет наполняться первым при распределении
+                    </div>
+                </div>
+                <!-- КОНЕЦ НОВЫХ ПОЛЕЙ -->
+
+                <div class="divider"></div>
+                <div class="form-group"><label class="form-label">Управление купюрами</label>
+                    <button class="action-button" onclick="openBillEditor()">✏️ Редактировать состав купюр</button>
+                    <button class="action-button" onclick="openPutMoney()">➕ Положить из банка</button>
+                    <button class="action-button danger" onclick="openTakeMoney()">➖ Взять (потратить)</button>
+                    <button class="action-button" onclick="openEnvelopeTransfer()">🔄 Переложить в другой конверт</button>
+                    <button class="action-button" onclick="openEnvelopeHistory()">📜 История этого конверта</button>
+                </div>
+                <div class="divider"></div>
+                <div class="form-group"><label class="form-label">Текущий состав</label><div id="detailEnvelopeBillsSummary" style="color: var(--text-secondary); font-size: 14px;"></div></div>
+                <div id="detailEnvelopeError" class="error-message"></div>
+            </div>
+            <div class="modal-footer" style="justify-content: space-between;">
+                <button class="btn btn-danger" onclick="deleteCurrentEnvelope()">🗑️ Удалить конверт</button>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-secondary" onclick="closeModal('envelopeDetailModal')">Закрыть</button>
+                    <button class="btn btn-primary" onclick="saveEnvelopeDetail()">Сохранить</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- МОДАЛКА: РЕДАКТИРОВАНИЕ КУПЮР -->
+    <div class="modal-overlay" id="billEditorModal">
+        <div class="modal">
+            <div class="modal-header"><div class="modal-title">️ Редактирование купюр</div><button class="modal-close" onclick="closeModal('billEditorModal')">&times;</button></div>
+            <div class="modal-body">
+                <div class="success-message visible" id="billEditorTotal">Итого: 0 ₽</div>
+                <div id="billEditorBills"></div>
+                <div id="billEditorError" class="error-message"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('billEditorModal')">Отмена</button>
+                <button class="btn btn-primary" onclick="saveBillEditor()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА: ДЕЙСТВИЯ С ДЕНЬГАМИ -->
+    <div class="modal-overlay" id="moneyActionModal">
+        <div class="modal">
+            <div class="modal-header"><div class="modal-title" id="moneyActionTitle">➕ Положить деньги</div><button class="modal-close" onclick="closeModal('moneyActionModal')">&times;</button></div>
+            <div class="modal-body">
+                <div id="moneyActionBills"></div>
+                <div class="success-message visible" id="moneyActionTotal">Выбрано: 0 ₽</div>
+                <div class="form-group" style="margin-top: 16px;"><label class="form-label">Комментарий (необязательно)</label><input type="text" class="form-input" id="moneyActionComment" placeholder="Например: Продукты, Такси"></div>
+                <div id="moneyActionError" class="error-message"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('moneyActionModal')">Отмена</button>
+                <button class="btn btn-primary" onclick="confirmMoneyAction()">Подтвердить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА: ПЕРЕЛОЖИТЬ МЕЖДУ КОНВЕРТАМИ -->
+    <div class="modal-overlay" id="envelopeTransferModal">
+        <div class="modal">
+            <div class="modal-header"><div class="modal-title">🔄 Переложить купюры</div><button class="modal-close" onclick="closeModal('envelopeTransferModal')">&times;</button></div>
+            <div class="modal-body">
+                <div class="form-group"><label class="form-label">Выберите купюры</label><div id="envelopeTransferBills"></div></div>
+                <div class="form-group"><label class="form-label">В какой конверт</label><select class="form-select" id="envelopeTransferTarget"><option value="">Выберите конверт</option></select></div>
+                <div class="form-group"><label class="form-label">Количество (доступно: <span id="envelopeTransferAvailable">0</span>)</label><input type="number" class="form-input" id="envelopeTransferCount" min="1" value="1"></div>
+                <div class="form-group"><label class="form-label">Комментарий (необязательно)</label><input type="text" class="form-input" id="envelopeTransferComment" placeholder="Перевод на общие расходы"></div>
+                <div id="envelopeTransferError" class="error-message"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('envelopeTransferModal')">Отмена</button>
+                <button class="btn btn-primary" onclick="confirmEnvelopeTransfer()">Переложить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА: РАСПРЕДЕЛЕНИЕ -->
+    <div class="modal-overlay" id="distributionModal">
+        <div class="modal">
+            <div class="modal-header"><div class="modal-title">💰 Распределение (<span id="distUserName">Я</span>)</div><button class="modal-close" onclick="closeModal('distributionModal')">&times;</button></div>
+            <div class="modal-body">
+                <div id="distributionStep1">
+                    <div class="form-group"><label class="form-label">Общая сумма для распределения (₽)</label><input type="number" class="form-input" id="distributionTotalAmount" min="0" placeholder="Введите сумму"></div>
+                    <div class="form-group"><label class="form-label">Купюры для распределения</label><div id="distributionBillsInput"></div></div>
+                    <div class="form-group"><label class="form-label">Комментарий (необязательно)</label><input type="text" class="form-input" id="distributionComment" placeholder="Зарплата за октябрь"></div>
+                    <div id="distributionError" class="error-message"></div>
+                    <div id="distributionSumCheck" class="success-message"></div>
+                </div>
+                <div id="distributionStep2" class="hidden">
+                    <div class="success-message visible">✓ Сумма проверена! Распределение:</div>
+                    <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">Нажмите на купюру, чтобы переложить её</div>
+                    <div id="distributionResult"></div>
+                </div>
+            </div>
+            <div class="modal-footer" id="distributionFooter1">
+                <button class="btn btn-secondary" onclick="closeModal('distributionModal')">Отмена</button>
+                <button class="btn btn-primary" onclick="checkDistributionSum()">Проверить сумму</button>
+            </div>
+            <div class="modal-footer" id="distributionFooter2" style="display: none;">
+                <button class="btn btn-secondary" onclick="backToDistributionStep1()">Назад</button>
+                <button class="btn btn-primary" onclick="finalizeDistribution()">Разложить по конвертам</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА: ПЕРЕЛОЖИТЬ В РЕЖИМЕ РАСПРЕДЕЛЕНИЯ -->
+    <div class="modal-overlay" id="transferModal">
+        <div class="modal">
+            <div class="modal-header"><div class="modal-title">🔄 Переложить купюры</div><button class="modal-close" onclick="closeModal('transferModal')">&times;</button></div>
+            <div class="modal-body">
+                <div class="form-group"><label class="form-label">Купюры для перемещения</label><div id="transferBillInfo"></div></div>
+                <div class="form-group"><label class="form-label">В какой конверт</label><select class="form-select" id="transferTargetEnvelope"></select></div>
+                <div class="form-group"><label class="form-label">Количество (доступно: <span id="transferAvailable">0</span>)</label><input type="number" class="form-input" id="transferCount" min="1" value="1"></div>
+                <div id="transferError" class="error-message"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('transferModal')">Отмена</button>
+                <button class="btn btn-primary" onclick="executeTransfer()">Переложить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА: ИСТОРИЯ КОНВЕРТА -->
+    <div class="modal-overlay" id="envelopeHistoryModal">
+        <div class="modal">
+            <div class="modal-header"><div class="modal-title" id="envelopeHistoryTitle">📜 История конверта</div><button class="modal-close" onclick="closeModal('envelopeHistoryModal')">&times;</button></div>
+            <div class="modal-body"><div class="history-list" id="envelopeHistoryList"></div></div>
+            <div class="modal-footer"><button class="btn btn-secondary btn-full" onclick="closeModal('envelopeHistoryModal')">Закрыть</button></div>
+        </div>
+    </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>
