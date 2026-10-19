@@ -887,108 +887,125 @@ function setEnvelopeType(type) {
     renderEnvelopePercentFields();
 }
 
+
+// Подсчитывает, сколько процентов пользователь уже распределил по всем конвертам
+function getUserAllocatedPercent(userId, excludeEnvelopeId) {
+    var total = 0;
+    state.envelopes.forEach(function(env) {
+        if (env.id === excludeEnvelopeId) return; // Игнорируем текущий редактируемый конверт
+        if (env.userPercents && env.userPercents[userId]) {
+            total += parseFloat(env.userPercents[userId]) || 0;
+        }
+    });
+    return total;
+}
+
+// Функция валидации поля ввода в реальном времени
+function validatePercent(input, userId, available) {
+    var val = parseFloat(input.value) || 0;
+    var hintEl = document.getElementById('hint_' + input.id);
+    var errorEl = document.getElementById('error_' + input.id);
+
+    if (val > available) {
+        input.classList.add('input-error');
+        hintEl.style.display = 'none';
+        errorEl.style.display = 'block';
+    } else {
+        input.classList.remove('input-error');
+        hintEl.style.display = 'block';
+        errorEl.style.display = 'none';
+    }
+}
+
+
 function renderEnvelopePercentFields() {
     var container = document.getElementById('envelopePercentContainer');
     if (!container) return;
     container.innerHTML = '';
+
+    var userIds = [];
     if (currentEnvelopeType === 'personal') {
-        var currentUser = getCurrentUser();
-        if (!currentUser) return;
+        if (state.currentUserId) userIds.push(state.currentUserId);
+    } else {
+        state.users.forEach(function(u) { userIds.push(u.id); });
+    }
+
+    userIds.forEach(function(userId) {
+        var user = getUserById(userId);
+        if (!user) return;
+        
+        var allocated = getUserAllocatedPercent(userId, currentEnvelopeId);
+        var available = Math.max(0, 100 - allocated);
+
         var item = document.createElement('div');
         item.className = 'envelope-percent-item';
-        item.innerHTML = '<div class="envelope-percent-avatar" style="background: ' + currentUser.color + '20; color: ' + currentUser.color + ';">' + currentUser.emoji + '</div>' +
-            '<span class="envelope-percent-name">' + escapeHtml(currentUser.name) + '</span>' +
-            '<input type="number" class="envelope-percent-input" id="envelopePercent_' + currentUser.id + '" min="0" max="100" value="0" placeholder="0" oninput="checkEnvelopePercents()">' +
-            '<span class="envelope-percent-suffix">%</span>';
+        item.innerHTML = '<div class="envelope-percent-avatar" style="background: ' + user.color + '20; color: ' + user.color + ';">' + user.emoji + '</div>' +
+            '<span class="envelope-percent-name">' + escapeHtml(user.name) + '</span>' +
+            '<div class="envelope-percent-input-wrapper">' +
+                '<input type="number" class="form-input percent-input" id="envelopePercent_' + userId + '" min="0" max="' + available + '" value="0" placeholder="0" oninput="validatePercent(this, \'' + userId + '\', ' + available + ')">' +
+                '<div class="percent-hint" id="hint_envelopePercent_' + userId + '">Свободно: ' + available + '%</div>' +
+                '<div class="percent-error" id="error_envelopePercent_' + userId + '">Превышен лимит</div>' +
+            '</div>';
         container.appendChild(item);
-    } else {
-        state.users.forEach(function(user) {
-            var item = document.createElement('div');
-            item.className = 'envelope-percent-item';
-            item.innerHTML = '<div class="envelope-percent-avatar" style="background: ' + user.color + '20; color: ' + user.color + ';">' + user.emoji + '</div>' +
-                '<span class="envelope-percent-name">' + escapeHtml(user.name) + '</span>' +
-                '<input type="number" class="envelope-percent-input" id="envelopePercent_' + user.id + '" min="0" max="100" value="0" placeholder="0" oninput="checkEnvelopePercents()">' +
-                '<span class="envelope-percent-suffix">%</span>';
-            container.appendChild(item);
-        });
-    }
-    checkEnvelopePercents();
+    });
 }
 
+
+
 function checkEnvelopePercents() {
-    var total = 0;
-    if (currentEnvelopeType === 'personal') {
-        var currentUser = getCurrentUser();
-        if (currentUser) {
-            var input = document.getElementById('envelopePercent_' + currentUser.id);
-            if (input) total = parseFloat(input.value) || 0;
-        }
-    } else {
-        state.users.forEach(function(user) {
-            var input = document.getElementById('envelopePercent_' + user.id);
-            if (input) total += parseFloat(input.value) || 0;
-        });
-    }
-    var warn = document.getElementById('percentWarning');
-    var totalEl = document.getElementById('percentTotal');
-    if (warn && totalEl) {
-        totalEl.textContent = total + '%';
-        warn.classList.toggle('visible', total > 100);
-    }
-    return total <= 100;
+    var isValid = true;
+    var inputs = document.querySelectorAll('#envelopePercentContainer .percent-input');
+    inputs.forEach(function(input) {
+        if (input.classList.contains('input-error')) isValid = false;
+    });
+    return isValid;
 }
+
 
 function renderDetailEnvelopePercentFields(env) {
     var container = document.getElementById('detailEnvelopePercentContainer');
     if (!container) return;
     container.innerHTML = '';
+
+    var userIds = [];
     if (env.type === 'personal') {
-        var userId = env.owners[0];
+        if (env.owners[0]) userIds.push(env.owners[0]);
+    } else {
+        state.users.forEach(function(u) { userIds.push(u.id); });
+    }
+
+    userIds.forEach(function(userId) {
         var user = getUserById(userId);
         if (!user) return;
-        var percent = env.userPercents[userId] || 0;
+        
+        var allocated = getUserAllocatedPercent(userId, env.id);
+        var available = Math.max(0, 100 - allocated);
+        var currentVal = env.userPercents[userId] || 0;
+
         var item = document.createElement('div');
         item.className = 'envelope-percent-item';
         item.innerHTML = '<div class="envelope-percent-avatar" style="background: ' + user.color + '20; color: ' + user.color + ';">' + user.emoji + '</div>' +
             '<span class="envelope-percent-name">' + escapeHtml(user.name) + '</span>' +
-            '<input type="number" class="envelope-percent-input" id="detailPercent_' + userId + '" min="0" max="100" value="' + percent + '" placeholder="0" oninput="checkDetailEnvelopePercents()">';
+            '<div class="envelope-percent-input-wrapper">' +
+                '<input type="number" class="form-input percent-input" id="detailPercent_' + userId + '" min="0" max="' + available + '" value="' + currentVal + '" placeholder="0" oninput="validatePercent(this, \'' + userId + '\', ' + available + ')">' +
+                '<div class="percent-hint" id="hint_detailPercent_' + userId + '">Свободно: ' + available + '%</div>' +
+                '<div class="percent-error" id="error_detailPercent_' + userId + '">Превышен лимит</div>' +
+            '</div>';
         container.appendChild(item);
-    } else {
-        state.users.forEach(function(user) {
-            var percent = env.userPercents[user.id] || 0;
-            var item = document.createElement('div');
-            item.className = 'envelope-percent-item';
-            item.innerHTML = '<div class="envelope-percent-avatar" style="background: ' + user.color + '20; color: ' + user.color + ';">' + user.emoji + '</div>' +
-                '<span class="envelope-percent-name">' + escapeHtml(user.name) + '</span>' +
-                '<input type="number" class="envelope-percent-input" id="detailPercent_' + user.id + '" min="0" max="100" value="' + percent + '" placeholder="0" oninput="checkDetailEnvelopePercents()">';
-            container.appendChild(item);
-        });
-    }
-    checkDetailEnvelopePercents();
+    });
 }
 
+
+
 function checkDetailEnvelopePercents() {
-    var env = state.envelopes.find(function(e) { return e.id === currentEnvelopeId; });
-    if (!env) return;
-    var total = 0;
-    if (env.type === 'personal') {
-        var userId = env.owners[0];
-        var input = document.getElementById('detailPercent_' + userId);
-        if (input) total = parseFloat(input.value) || 0;
-    } else {
-        state.users.forEach(function(user) {
-            var input = document.getElementById('detailPercent_' + user.id);
-            if (input) total += parseFloat(input.value) || 0;
-        });
-    }
-    var warn = document.getElementById('detailPercentWarning');
-    var totalEl = document.getElementById('detailPercentTotal');
-    if (warn && totalEl) {
-        totalEl.textContent = total + '%';
-        warn.classList.toggle('visible', total > 100);
-    }
-    return total <= 100;
+    var isValid = true;
+    var inputs = document.querySelectorAll('#detailEnvelopePercentContainer .percent-input');
+    inputs.forEach(function(input) {
+        if (input.classList.contains('input-error')) isValid = false;
+    });
+    return isValid;
 }
+
 
 function renderPriorityDenomSelect(selectId, selectedVal) {
     const sel = document.getElementById(selectId);
