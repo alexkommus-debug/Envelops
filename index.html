@@ -556,7 +556,7 @@
                 </div>
                 <div id="userModalError" class="error-message"></div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer-equal">
                 <button class="btn btn-secondary" onclick="closeModal('userModal')">Отмена</button>
                 <button class="btn btn-primary" onclick="saveUser()">Сохранить</button>
             </div>
@@ -571,61 +571,95 @@
                 <button class="modal-close" onclick="closeModal('envelopeModal')">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="form-group"><label class="form-label">Иконка</label><div class="emoji-picker" id="envelopeEmojiPicker"></div></div>
-                <div class="form-group"><label class="form-label">Название</label><input type="text" class="form-input" id="envelopeName" placeholder="Например: Продукты"></div>
                 
-                <div class="form-group">
-                    <label class="form-label">Тип конверта</label>
-                    <div class="envelope-type-toggle">
-                        <button class="type-toggle-btn active" data-type="personal" onclick="setEnvelopeType('personal')"> Личный</button>
-                        <button class="type-toggle-btn" data-type="shared" onclick="setEnvelopeType('shared')">👥 Общий</button>
+                <!-- СЕКЦИЯ 1: ОСНОВНАЯ ИНФОРМАЦИЯ -->
+                <div class="modal-section">
+                    <div class="modal-section-title">📁 Основная информация</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Иконка</label>
+                        <div class="emoji-picker" id="envelopeEmojiPicker"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Название</label>
+                        <input type="text" class="form-input" id="envelopeName" placeholder="Например: Продукты">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Тип конверта</label>
+                        <div class="envelope-type-toggle">
+                            <button class="type-toggle-btn active" data-type="personal" onclick="setEnvelopeType('personal')">👤 Личный</button>
+                            <button class="type-toggle-btn" data-type="shared" onclick="setEnvelopeType('shared')">👥 Общий</button>
+                        </div>
+                    </div>
+
+                    <div id="envelopePercentContainer">
+                        <!-- JS заполнит динамически -->
                     </div>
                 </div>
 
-                <div id="envelopePercentContainer">
-                    <!-- JS заполнит динамически -->
-                </div>
+                <!-- СЕКЦИЯ 2: НАСТРОЙКИ РАСПРЕДЕЛЕНИЯ -->
+                <div class="modal-section">
+                    <div class="modal-section-title">⚙️ Настройки распределения</div>
+                    
+                    <div class="form-group form-row">
+                        <div class="form-group-half">
+                            <label class="form-label">Округление</label>
+                            <select class="form-select" id="envelopeRoundDirection">
+                                <option value="standard">Стандартное</option>
+                                <option value="up">Всегда вверх</option>
+                                <option value="down">Всегда вниз</option>
+                            </select>
+                        </div>
+                        <div class="form-group-half">
+                            <label class="form-label">Шаг</label>
+                            <select class="form-select" id="envelopeRoundStep">
+                                <option value="100">100 ₽</option>
+                                <option value="50">50 ₽</option>
+                                <option value="500">500 ₽</option>
+                                <option value="1000">1 000 ₽</option>
+                                <option value="5000">5 000 ₽</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Цель накопления (необязательно)</label>
+                        <input type="number" class="form-input" id="envelopeGoal" min="0" placeholder="Например: 50000">
+                    </div>
 
-                <div class="percent-warning" id="percentWarning">
-                    <span>Сумма процентов превышает 100%. Сейчас: <span class="percent-total" id="percentTotal">0%</span></span>
-                </div>
+                    <div class="form-group">
+                        <label class="form-label">Приоритетный номинал</label>
+                        <select class="form-select" id="envelopePriorityDenom">
+                            <option value="">Любой номинал</option>
+                        </select>
+                        <div class="form-hint">Алгоритм будет стараться класть сюда купюры этого номинала</div>
+                    </div>
 
-                <div class="form-group"><label class="form-label">Округление</label><select class="form-select" id="envelopeRoundDirection"><option value="standard">Стандартное</option><option value="up">Всегда вверх</option><option value="down">Всегда вниз</option></select></div>
-                <div class="form-group"><label class="form-label">Шаг округления</label><select class="form-select" id="envelopeRoundStep"><option value="100">100 ₽</option><option value="50">50 ₽</option><option value="500">500 ₽</option><option value="1000">1 000 ₽</option><option value="5000">5 000 ₽</option></select></div>
-                <div class="form-group"><label class="form-label">Цель накопления (необязательно)</label><input type="number" class="form-input" id="envelopeGoal" min="0" placeholder="Например: 50000"></div>
-
-                <!-- НОВЫЕ ПОЛЯ: Приоритетный номинал и Приоритетный конверт -->
-                <div class="form-group">
-                    <label class="form-label">Приоритетный номинал</label>
-                    <select class="form-select" id="envelopePriorityDenom">
-                        <option value="">Любой номинал</option>
-                    </select>
-                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">
-                        Алгоритм будет стараться класть в этот конверт купюры выбранного номинала
+                    <div class="form-group" id="priorityEnvelopeContainer" style="display: none;">
+                        <label class="form-label">Приоритетный конверт</label>
+                        <button class="btn-priority-toggle" id="priorityEnvelopeBtn" onclick="toggleUserPriorityEnvelope()">Сделать приоритетным</button>
+                        <div class="form-hint">Этот конверт будет наполняться первым при распределении</div>
                     </div>
                 </div>
 
-                <div class="form-group" id="priorityEnvelopeContainer" style="display: none;">
-                    <label class="form-label">Приоритетный конверт</label>
-                    <button class="btn-priority-toggle" id="priorityEnvelopeBtn" onclick="toggleUserPriorityEnvelope()">
-                        Сделать приоритетным
-                    </button>
-                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">
-                        Этот конверт будет наполняться первым при распределении
-                    </div>
+                <!-- СЕКЦИЯ 3: НАЧАЛЬНЫЙ СОСТАВ КУПЮР -->
+                <div class="modal-section">
+                    <div class="modal-section-title"> Начальный состав купюр</div>
+                    <div id="envelopeBills"></div>
                 </div>
-                <!-- КОНЕЦ НОВЫХ ПОЛЕЙ -->
 
-                <div class="form-group"><label class="form-label">Купюры в конверте</label><div id="envelopeBills"></div></div>
                 <div id="envelopeError" class="error-message"></div>
-
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer-equal">
                 <button class="btn btn-secondary" onclick="closeModal('envelopeModal')">Отмена</button>
                 <button class="btn btn-primary" onclick="saveEnvelope()">Сохранить</button>
             </div>
+
         </div>
     </div>
+
 
     <!-- МОДАЛКА: ДЕТАЛИ КОНВЕРТА -->
     <div class="modal-overlay" id="envelopeDetailModal">
@@ -635,58 +669,96 @@
                 <button class="modal-close" onclick="closeModal('envelopeDetailModal')">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="form-group"><label class="form-label">Название</label><input type="text" class="form-input" id="detailEnvelopeNameInput"></div>
-                <div class="form-group"><label class="form-label">Общая сумма</label><div class="total-balance" id="detailEnvelopeAmount" style="font-size: 32px; color: var(--text-primary);">0 ₽</div></div>
                 
-                <div class="form-group">
-                    <label class="form-label">Тип: <span id="detailEnvelopeTypeLabel">Личный</span></label>
-                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Тип конверта нельзя изменить после создания</div>
-                </div>
+                <!-- СЕКЦИЯ 1: ИНФОРМАЦИЯ О КОНВЕРТЕ -->
+                <div class="modal-section">
+                    <div class="modal-section-title"> Информация о конверте</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Название</label>
+                        <input type="text" class="form-input" id="detailEnvelopeNameInput">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Общая сумма</label>
+                        <div class="total-balance" id="detailEnvelopeAmount" style="font-size: 32px; color: var(--text-primary);">0 ₽</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Тип</label>
+                        <div class="form-static-text" id="detailEnvelopeTypeLabel">Личный</div>
+                        <div class="form-hint">Тип конверта нельзя изменить после создания</div>
+                    </div>
 
-                <div id="detailEnvelopePercentContainer">
-                    <!-- JS заполнит динамически -->
-                </div>
-
-                <div class="percent-warning" id="detailPercentWarning">
-                    <span>Сумма процентов превышает 100%. Сейчас: <span class="percent-total" id="detailPercentTotal">0%</span></span>
-                </div>
-
-                <div class="form-group"><label class="form-label">Округление</label><select class="form-select" id="detailEnvelopeRoundDirection"><option value="standard">Стандартное</option><option value="up">Всегда вверх</option><option value="down">Всегда вниз</option></select></div>
-                <div class="form-group"><label class="form-label">Шаг округления</label><select class="form-select" id="detailEnvelopeRoundStep"><option value="100">100 ₽</option><option value="50">50 ₽</option><option value="500">500 ₽</option><option value="1000">1 000 ₽</option><option value="5000">5 000 ₽</option></select></div>
-                <div class="form-group"><label class="form-label">Цель накопления (необязательно)</label><input type="number" class="form-input" id="detailEnvelopeGoal" min="0" placeholder="Например: 50000"></div>
-
-                <!-- НОВЫЕ ПОЛЯ: Приоритетный номинал и Приоритетный конверт -->
-                <div class="form-group">
-                    <label class="form-label">Приоритетный номинал</label>
-                    <select class="form-select" id="detailPriorityDenom">
-                        <option value="">Любой номинал</option>
-                    </select>
-                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">
-                        Алгоритм будет стараться класть в этот конверт купюры выбранного номинала
+                    <div id="detailEnvelopePercentContainer">
+                        <!-- JS заполнит динамически -->
                     </div>
                 </div>
 
-                <div class="form-group" id="detailPriorityEnvelopeContainer" style="display: none;">
-                    <label class="form-label">Приоритетный конверт</label>
-                    <button class="btn-priority-toggle" id="detailPriorityEnvelopeBtn" onclick="toggleDetailUserPriorityEnvelope()">
-                        Сделать приоритетным
-                    </button>
-                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">
-                        Этот конверт будет наполняться первым при распределении
+                <!-- СЕКЦИЯ 2: НАСТРОЙКИ РАСПРЕДЕЛЕНИЯ -->
+                <div class="modal-section">
+                    <div class="modal-section-title">⚙️ Настройки распределения</div>
+                    
+                    <div class="form-group form-row">
+                        <div class="form-group-half">
+                            <label class="form-label">Округление</label>
+                            <select class="form-select" id="detailEnvelopeRoundDirection">
+                                <option value="standard">Стандартное</option>
+                                <option value="up">Всегда вверх</option>
+                                <option value="down">Всегда вниз</option>
+                            </select>
+                        </div>
+                        <div class="form-group-half">
+                            <label class="form-label">Шаг</label>
+                            <select class="form-select" id="detailEnvelopeRoundStep">
+                                <option value="100">100 ₽</option>
+                                <option value="50">50 ₽</option>
+                                <option value="500">500 ₽</option>
+                                <option value="1000">1 000 ₽</option>
+                                <option value="5000">5 000 ₽</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Цель накопления (необязательно)</label>
+                        <input type="number" class="form-input" id="detailEnvelopeGoal" min="0" placeholder="Например: 50000">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Приоритетный номинал</label>
+                        <select class="form-select" id="detailPriorityDenom">
+                            <option value="">Любой номинал</option>
+                        </select>
+                        <div class="form-hint">Алгоритм будет стараться класть сюда купюры этого номинала</div>
+                    </div>
+
+                    <div class="form-group" id="detailPriorityEnvelopeContainer" style="display: none;">
+                        <label class="form-label">Приоритетный конверт</label>
+                        <button class="btn-priority-toggle" id="detailPriorityEnvelopeBtn" onclick="toggleDetailUserPriorityEnvelope()">Сделать приоритетным</button>
+                        <div class="form-hint">Этот конверт будет наполняться первым при распределении</div>
                     </div>
                 </div>
-                <!-- КОНЕЦ НОВЫХ ПОЛЕЙ -->
 
-                <div class="divider"></div>
-                <div class="form-group"><label class="form-label">Управление купюрами</label>
-                    <button class="action-button" onclick="openBillEditor()">✏️ Редактировать состав купюр</button>
-                    <button class="action-button" onclick="openPutMoney()">➕ Положить из банка</button>
-                    <button class="action-button danger" onclick="openTakeMoney()">➖ Взять (потратить)</button>
-                    <button class="action-button" onclick="openEnvelopeTransfer()">🔄 Переложить в другой конверт</button>
-                    <button class="action-button" onclick="openEnvelopeHistory()">📜 История этого конверта</button>
+                <!-- СЕКЦИЯ 3: ДЕЙСТВИЯ С КУПЮРАМИ -->
+                <div class="modal-section">
+                    <div class="modal-section-title">🛠️ Действия с купюрами</div>
+                    
+                    <div class="action-grid">
+                        <button class="action-button" onclick="openBillEditor()">✏️ Редактировать состав купюр</button>
+                        <button class="action-button" onclick="openPutMoney()">➕ Положить из банка</button>
+                        <button class="action-button danger" onclick="openTakeMoney()">➖ Взять (потратить)</button>
+                        <button class="action-button" onclick="openEnvelopeTransfer()">🔄 Переложить в другой конверт</button>
+                        <button class="action-button action-button-full" onclick="openEnvelopeHistory()">📜 История этого конверта</button>
+                    </div>
                 </div>
-                <div class="divider"></div>
-                <div class="form-group"><label class="form-label">Текущий состав</label><div id="detailEnvelopeBillsSummary" style="color: var(--text-secondary); font-size: 14px;"></div></div>
+
+                <!-- СЕКЦИЯ 4: ТЕКУЩИЙ СОСТАВ -->
+                <div class="modal-section">
+                    <div class="modal-section-title">💰 Текущий состав</div>
+                    <div id="detailEnvelopeBillsSummary" class="bills-summary"></div>
+                </div>
+
                 <div id="detailEnvelopeError" class="error-message"></div>
             </div>
             <div class="modal-footer" style="justify-content: space-between;">
@@ -696,9 +768,9 @@
                     <button class="btn btn-primary" onclick="saveEnvelopeDetail()">Сохранить</button>
                 </div>
             </div>
-
         </div>
     </div>
+
 
     <!-- МОДАЛКА: РЕДАКТИРОВАНИЕ КУПЮР -->
     <div class="modal-overlay" id="billEditorModal">
@@ -709,7 +781,7 @@
                 <div id="billEditorBills"></div>
                 <div id="billEditorError" class="error-message"></div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer-equal">
                 <button class="btn btn-secondary" onclick="closeModal('billEditorModal')">Отмена</button>
                 <button class="btn btn-primary" onclick="saveBillEditor()">Сохранить</button>
             </div>
@@ -726,7 +798,7 @@
                 <div class="form-group" style="margin-top: 16px;"><label class="form-label">Комментарий (необязательно)</label><input type="text" class="form-input" id="moneyActionComment" placeholder="Например: Продукты, Такси"></div>
                 <div id="moneyActionError" class="error-message"></div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer-equal">
                 <button class="btn btn-secondary" onclick="closeModal('moneyActionModal')">Отмена</button>
                 <button class="btn btn-primary" onclick="confirmMoneyAction()">Подтвердить</button>
             </div>
@@ -744,7 +816,7 @@
                 <div class="form-group"><label class="form-label">Комментарий (необязательно)</label><input type="text" class="form-input" id="envelopeTransferComment" placeholder="Перевод на общие расходы"></div>
                 <div id="envelopeTransferError" class="error-message"></div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer-equal">
                 <button class="btn btn-secondary" onclick="closeModal('envelopeTransferModal')">Отмена</button>
                 <button class="btn btn-primary" onclick="confirmEnvelopeTransfer()">Переложить</button>
             </div>
@@ -769,11 +841,11 @@
                     <div id="distributionResult"></div>
                 </div>
             </div>
-            <div class="modal-footer" id="distributionFooter1">
+            <div class="modal-footer-equal" id="distributionFooter1">
                 <button class="btn btn-secondary" onclick="closeModal('distributionModal')">Отмена</button>
                 <button class="btn btn-primary" onclick="checkDistributionSum()">Проверить сумму</button>
             </div>
-            <div class="modal-footer" id="distributionFooter2" style="display: none;">
+            <div class="modal-footer-equal" id="distributionFooter2" style="display: none;">
                 <button class="btn btn-secondary" onclick="backToDistributionStep1()">Назад</button>
                 <button class="btn btn-primary" onclick="finalizeDistribution()">Разложить по конвертам</button>
             </div>
@@ -790,7 +862,7 @@
                 <div class="form-group"><label class="form-label">Количество (доступно: <span id="transferAvailable">0</span>)</label><input type="number" class="form-input" id="transferCount" min="1" value="1"></div>
                 <div id="transferError" class="error-message"></div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer-equal">
                 <button class="btn btn-secondary" onclick="closeModal('transferModal')">Отмена</button>
                 <button class="btn btn-primary" onclick="executeTransfer()">Переложить</button>
             </div>
