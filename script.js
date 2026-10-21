@@ -55,6 +55,588 @@ var currentEnvelopeTypeFilter = 'all'; // 'all', 'personal', 'shared'
 var unsubscribeFamily = null;
 var isSaving = false;
 
+
+// ===== ОНБОРДИНГ: МАСТЕР ПЕРВОГО ВХОДА =====
+var onboardingSteps = [
+    {
+        icon: '👋',
+        title: 'Добро пожаловать!',
+        text: 'Привет! Это приложение поможет вам управлять наличными деньгами вашей семьи. Здесь нет банковских карт и онлайн-платежей — только реальные купюры и умные конверты. Давайте быстро разберёмся, как это работает!'
+    },
+    {
+        icon: '📁',
+        title: 'Что такое конверты?',
+        text: 'Конверт — это виртуальная категория для ваших целей. Создайте конверты для продуктов 🍔, транспорта 🚗 или накоплений 🎯. Когда получаете наличные, просто раскладывайте их по конвертам. Так вы всегда будете знать, сколько денег осталось на конкретную цель.'
+    },
+    {
+        icon: '📊',
+        title: 'Умное распределение',
+        text: 'Вам не нужно считать в уме! Для каждого конверта укажите процент от дохода. Например, 50% на продукты. Когда вы нажмёте кнопку «Разложить», алгоритм сам посчитает точные суммы и распределит купюры по конвертам.'
+    },
+    {
+        icon: '️',
+        title: 'Тонкая настройка',
+        text: 'Хотите больше контроля? Настройте <b>округление</b> (например, до 100 ₽), чтобы не возиться с мелочью. Выберите <b>приоритетный конверт</b>, который будет наполняться первым, и укажите <b>приоритетный номинал</b> купюр для конкретных целей.'
+    },
+    {
+        icon: '👨‍👩👧',
+        title: 'Семейный доступ',
+        text: 'Приложение создано для совместного использования. Вы можете добавить участников вручную в разделе «Участники» или просто поделиться кодом семьи. Когда второй человек войдёт по коду, он автоматически появится в системе со своими личными конвертами.'
+    },
+    {
+        icon: '📈',
+        title: 'Полный контроль',
+        text: 'Все операции сохраняются в истории. В разделе «Статистика» вы увидите наглядные графики: куда уходят деньги, как растёт баланс и сколько удалось накопить. Фильтруйте данные по периодам и пользователям. Готовы начать?'
+    }
+];
+
+var currentOnboardingStep = 0;
+
+function showOnboardingMaster() {
+    const overlay = document.getElementById('onboardingMasterOverlay');
+    if (!overlay) return;
+    
+    // Создаем точки прогресса
+    const dotsContainer = document.getElementById('onboardingDots');
+    dotsContainer.innerHTML = '';
+    onboardingSteps.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'onboarding-dot' + (index === 0 ? ' active' : '');
+        dotsContainer.appendChild(dot);
+    });
+    
+    currentOnboardingStep = 0;
+    renderOnboardingStep();
+    
+    overlay.style.display = 'flex';
+    // Небольшая задержка для срабатывания CSS transition
+    setTimeout(() => {
+        overlay.classList.add('active');
+    }, 10);
+}
+
+function renderOnboardingStep() {
+    const step = onboardingSteps[currentOnboardingStep];
+    const wrapper = document.getElementById('onboardingContentWrapper');
+    
+    // Анимация смены контента
+    wrapper.style.animation = 'none';
+    wrapper.offsetHeight; /* trigger reflow */
+    wrapper.style.animation = 'fadeSlideUp 0.4s ease forwards';
+    
+    document.getElementById('onboardingIcon').textContent = step.icon;
+    document.getElementById('onboardingTitle').textContent = step.title;
+    document.getElementById('onboardingText').innerHTML = step.text;
+    
+    // Обновляем точки
+    const dots = document.querySelectorAll('.onboarding-dot');
+    dots.forEach((dot, index) => {
+        if (index === currentOnboardingStep) dot.classList.add('active');
+        else dot.classList.remove('active');
+    });
+    
+    // Меняем текст кнопки на последнем шаге
+    const nextBtn = document.getElementById('onboardingNextBtn');
+    if (currentOnboardingStep === onboardingSteps.length - 1) {
+        nextBtn.textContent = 'Начать пользоваться →';
+    } else {
+        nextBtn.textContent = 'Далее →';
+    }
+}
+
+function nextOnboardingStep() {
+    if (currentOnboardingStep < onboardingSteps.length - 1) {
+        currentOnboardingStep++;
+        renderOnboardingStep();
+    } else {
+        finishOnboardingMaster();
+    }
+}
+
+function skipOnboardingMaster() {
+    finishOnboardingMaster();
+}
+
+function finishOnboardingMaster() {
+    const overlay = document.getElementById('onboardingMasterOverlay');
+    if (overlay) {
+        overlay.classList.remove('active');
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 400);
+    }
+    
+    // Сохраняем флаг конкретно для текущего пользователя
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+        localStorage.setItem('hasSeenOnboardingMaster_' + currentUser.id, 'true');
+    }
+}
+
+
+// ===== ДВИЖОК ИНТЕРАКТИВНЫХ ТУРОВ =====
+var tours = {
+    main: [
+        {
+            target: '.header',
+            title: ' Общий баланс',
+            text: 'Здесь отображается общая сумма наличных по всем конвертам. Также вы видите разбивку: ваши личные конверты, общие и нераспределенный остаток в "банке".'
+        },
+        {
+            target: '#createEnvelopeBtn, .empty-state .btn-primary',
+            title: '📁 Создание конверта',
+            text: 'Нажмите эту кнопку, чтобы создать свой первый конверт. Конверт — это виртуальная категория для ваших целей: продукты, транспорт, накопления.'
+        },
+        {
+            target: '#fabDistribution',
+            title: '✨ Распределение денег',
+            text: 'Нажмите эту кнопку, чтобы умный алгоритм разложил наличные по конвертам в соответствии с заданными процентами и приоритетами.'
+        }
+    ],
+    stats: [
+        {
+            target: '.stats-filters',
+            title: '🔍 Гибкие фильтры',
+            text: 'Настраивайте отображение данных: выберите период, конкретного пользователя или тип конверта, чтобы увидеть точную картину.'
+        },
+        {
+            target: '#kpiGrid',
+            title: '📊 Ключевые показатели',
+            text: 'Здесь вы видите сводку: сколько поступило, сколько потрачено, текущий баланс и количество переводов за выбранный период.'
+        },
+        {
+            target: '.chart-section',
+            title: '📈 Наглядные графики',
+            text: 'Графики покажут динамику баланса, расходы по дням и структуру трат по конвертам. Используйте выпадающий список для выбора конкретного конверта.'
+        }
+    ],
+    history: [
+        {
+            target: '.operation-type-filter',
+            title: '🏷️ Типы операций',
+            text: 'Фильтруйте историю: смотрите только пополнения, траты, переводы или технические ручные корректировки.'
+        },
+        {
+            target: '#historyMainList',
+            title: '📜 Хронология действий',
+            text: 'Здесь записаны все операции. Групповые распределения сворачиваются в одну строку для удобства. Нажмите на строку, чтобы увидеть детали.'
+        }
+    ], 
+    settings: [
+        {
+            target: '.settings-page-section:first-child',
+            title: '‍👩‍👧 Ваша семья',
+            text: 'Здесь отображается код вашей семьи. Поделитесь им с близкими, чтобы они могли присоединиться. Кнопка "Выйти из семьи" позволит выйти из текущего аккаунта.'
+        },
+        {
+            target: '.settings-page-section:nth-child(2)',
+            title: '💾 Резервное копирование',
+            text: 'Вы можете скачать все данные в JSON-файл для безопасного хранения, или загрузить данные из ранее сохранённого файла. Рекомендуем делать резервные копии регулярно.'
+        },
+        {
+            target: '.settings-page-section:nth-child(3)',
+            title: '🎓 Обучение и подсказки',
+            text: 'Здесь можно сбросить прогресс обучения, если вы хотите пройти туры заново. Кнопки позволяют сбросить отдельный тур или все сразу.'
+        },
+        {
+            target: '.danger-zone',
+            title: '⚠️ Опасная зона',
+            text: 'Кнопка "Стереть все данные" безвозвратно удалит всю информацию о семье, конвертах и транзакциях. Используйте только в крайнем случае!'
+        }
+    ],
+    users: [
+        {
+            target: '.users-list',
+            title: ' Участники семьи',
+            text: 'Здесь отображаются все участники вашей семьи. У каждого пользователя свои личные конверты и процент распределения. Вы можете редактировать или удалять участников (кроме создателя).'
+        },
+        {
+            target: '#usersList + .btn-primary',
+            title: '➕ Добавить участника',
+            text: 'Нажмите эту кнопку, чтобы добавить нового участника вручную. Задайте имя, эмодзи и цвет. Либо поделитесь кодом семьи — тогда участник появится автоматически при входе.'
+        }
+    ]
+};
+
+var modalTours = {
+    createEnvelope: [
+        { target: '#envelopeEmojiPicker', title: '🎨 Иконка', text: 'Выберите иконку, которая ассоциируется с целью конверта. Это поможет быстро находить его в списке.' },
+        { target: '#envelopeName', title: '📝 Название', text: 'Введите понятное название: "Продукты", "Транспорт", "Копилка на отпуск".' },
+        { target: '.envelope-type-toggle', title: '👤 Тип конверта', text: 'Личный — конверт принадлежит только вам. Общий — виден всем участникам семьи, и каждый может указать свой процент.' },
+        { target: '#envelopePercentContainer', title: '📊 Проценты', text: 'Укажите, какой процент от дохода вы хотите откладывать сюда. Сумма процентов по всем вашим конвертам не должна превышать 100%.' },
+        { 
+            target: '.modal-section:nth-child(2) .form-row', 
+            title: '⚙️ Округление и шаг', 
+            text: 'Округление определяет, как алгоритм будет распределять сумму. Шаг — это число, кратное которому будет результат (100, 500, 1000 ₽).' 
+        },
+        { target: '#envelopeGoal', title: '🎯 Цель накопления', text: 'Укажите желаемую сумму. Приложение будет показывать прогресс заполнения конверта относительно этой цели.' },
+        { target: '#envelopePriorityDenom', title: '💵 Приоритетный номинал', text: 'Если вы хотите, чтобы в этот конверт клались купюры определённого номинала (например, только 5000 ₽), выберите его здесь.' },
+        { target: '#priorityEnvelopeContainer', title: '⭐ Приоритетный конверт', text: 'Если этот конверт для вас важнее остальных, сделайте его приоритетным. При распределении он будет наполняться первым.' },
+        { target: '#envelopeBills', title: '💰 Начальный состав', text: 'Если у вас уже есть наличные для этого конверта, укажите количество купюр. Если нет — оставьте нули, вы сможете добавить деньги позже.' }
+    ],
+    editEnvelope: [
+        { target: '.action-button:nth-child(1)', title: '✏️ Редактировать купюры', text: 'Измените текущий состав купюр в конверте вручную.' },
+        { target: '.action-button:nth-child(2)', title: '➕ Положить из банка', text: 'Переместите неиспользованные купюры из общего "банка" в этот конверт.' },
+        { target: '.action-button:nth-child(3)', title: '➖ Взять (потратить)', text: 'Уберите купюры из конверта, если вы их потратили в реальной жизни.' },
+        { target: '.action-button:nth-child(4)', title: '🔄 Переложить', text: 'Переместите купюры из этого конверта в другой.' },
+        { target: '.action-button-full', title: '📜 История', text: 'Посмотрите все операции, которые когда-либо происходили с этим конвертом.' }
+    ],
+    distribution: [
+        { target: '#distributionTotalAmount', title: '💰 Общая сумма', text: 'Введите общую сумму наличных, которую вы хотите распределить по конвертам прямо сейчас.' },
+        { target: '#distributionBillsInput', title: '🏦 Состав купюр', text: 'Укажите, купюры каких номиналов и в каком количестве вы раскладываете. Сумма должна точно совпадать с общей.' },
+        { target: '#distributionFooter1 .btn-primary', title: '✅ Проверить и разложить', text: 'Нажмите "Проверить сумму". Если всё верно, алгоритм автоматически распределит деньги по конвертам согласно вашим настройкам.' }
+    ],
+    distributionStep2: [
+        { target: '#distributionResult', title: '📦 Результат распределения', text: 'Здесь показано, сколько денег попадёт в каждый конверт. Купюры разложены по номиналам согласно вашим настройкам.' },
+        { target: '.bill-visual', title: ' Ручная корректировка', text: 'Нажмите на любую купюру в результате, чтобы переложить её в другой конверт. Это полезно, если алгоритм разложил не так, как вы хотели.' },
+        { target: '#distributionFooter2 .btn-primary', title: '✅ Подтвердить', text: 'Если всё устраивает, нажмите "Разложить по конвертам". Деньги будут перемещены, и операция запишется в историю.' }
+    ]
+};
+
+
+
+var currentModalTourId = null;
+var currentModalTourStepIndex = 0;
+
+
+function startModalTour(tourId) {
+    currentModalTourId = tourId;
+    currentModalTourStepIndex = 0;
+    
+    const overlay = document.getElementById('modalTourOverlay');
+    if (!overlay) return;
+    
+    // Для тура создания конверта делаем кнопку приоритета видимой
+    if (tourId === 'createEnvelope') {
+        const prioContainer = document.getElementById('priorityEnvelopeContainer');
+        if (prioContainer) {
+            prioContainer.style.display = 'block';
+        }
+    }
+    
+    overlay.style.display = 'block';
+    setTimeout(() => {
+        overlay.classList.add('active');
+        renderModalTourStep();
+    }, 300);
+}
+
+
+
+function renderModalTourStep() {
+    const tour = modalTours[currentModalTourId];
+    if (!tour || currentModalTourStepIndex >= tour.length) {
+        finishModalTour();
+        return;
+    }
+    
+    const step = tour[currentModalTourStepIndex];
+    const targetEl = document.querySelector(step.target);
+    const spotlight = document.getElementById('modalTourSpotlight');
+    const tooltip = document.getElementById('modalTourTooltip');
+    
+    document.getElementById('modalTourTooltipTitle').textContent = step.title;
+    document.getElementById('modalTourTooltipText').textContent = step.text;
+    
+    const nextBtn = document.getElementById('modalTourNextBtn');
+    if (currentModalTourStepIndex === tour.length - 1) {
+        nextBtn.textContent = 'Понятно ✓';
+    } else {
+        nextBtn.textContent = 'Далее →';
+    }
+    
+    if (targetEl) {
+        const rect = targetEl.getBoundingClientRect();
+        const isVisible = (rect.width > 0 && rect.height > 0 && 
+                          getComputedStyle(targetEl).display !== 'none' &&
+                          getComputedStyle(targetEl).visibility !== 'hidden');
+        
+        if (!isVisible) {
+            nextModalTourStep();
+            return;
+        }
+        
+        // НОВАЯ ЛОГИКА: прокручиваем модалку к элементу
+        const modal = targetEl.closest('.modal');
+        if (modal) {
+            const modalRect = modal.getBoundingClientRect();
+            const targetRelativeTop = rect.top - modalRect.top + modal.scrollTop;
+            const targetRelativeBottom = rect.bottom - modalRect.top + modal.scrollTop;
+            const modalHeight = modal.clientHeight;
+            
+            // Если элемент не виден в модалке — прокручиваем
+            if (rect.top < modalRect.top || rect.bottom > modalRect.bottom) {
+                const scrollTo = targetRelativeTop - (modalHeight / 2) + (rect.height / 2);
+                modal.scrollTo({
+                    top: scrollTo,
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        // Ждём завершения прокрутки
+        setTimeout(() => {
+            const rect = targetEl.getBoundingClientRect();
+            
+            // Позиционируем прожектор
+            spotlight.style.display = 'block';
+            spotlight.style.width = rect.width + 'px';
+            spotlight.style.height = rect.height + 'px';
+            spotlight.style.top = rect.top + 'px';
+            spotlight.style.left = rect.left + 'px';
+            
+            // Умное позиционирование тултипа
+            const tooltipWidth = 320;
+            const tooltipHeight = 200;
+            const gap = 15;
+            
+            let tooltipLeft, tooltipTop;
+            const spaceBottom = window.innerHeight - rect.bottom;
+            
+            if (spaceBottom >= tooltipHeight + gap) {
+                tooltipLeft = rect.left;
+                tooltipTop = rect.bottom + gap;
+            } else {
+                tooltipLeft = rect.left;
+                tooltipTop = rect.top - tooltipHeight - gap;
+            }
+            
+            // Ограничения по краям
+            const padding = 10;
+            tooltipLeft = Math.max(padding, Math.min(tooltipLeft, window.innerWidth - tooltipWidth - padding));
+            tooltipTop = Math.max(padding, Math.min(tooltipTop, window.innerHeight - tooltipHeight - padding));
+            
+            tooltip.style.left = tooltipLeft + 'px';
+            tooltip.style.top = tooltipTop + 'px';
+            tooltip.style.transform = 'none';
+        }, 500); // Увеличили задержку для прокрутки
+    } else {
+        spotlight.style.display = 'none';
+        tooltip.style.left = '50%';
+        tooltip.style.top = '50%';
+        tooltip.style.transform = 'translate(-50%, -50%)';
+    }
+}
+
+
+function nextModalTourStep() {
+    currentModalTourStepIndex++;
+    renderModalTourStep();
+}
+
+function skipModalTour() {
+    finishModalTour();
+}
+
+function finishModalTour() {
+    const overlay = document.getElementById('modalTourOverlay');
+    if (overlay) {
+        overlay.classList.remove('active');
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 400);
+    }
+    
+    if (currentModalTourId === 'createEnvelope') {
+        const prioContainer = document.getElementById('priorityEnvelopeContainer');
+        if (prioContainer) {
+            if (typeof updatePriorityEnvelopeToggleVisibility === 'function') {
+                updatePriorityEnvelopeToggleVisibility();
+            } else {
+                prioContainer.style.display = 'none';
+            }
+        }
+    }
+    
+    if (currentModalTourId) {
+        const userId = state.currentUserId;
+        localStorage.setItem('hasSeenModalTour_' + currentModalTourId + '_' + userId, 'true');
+    }
+    
+    currentModalTourId = null;
+    currentModalTourStepIndex = 0;
+}
+
+
+
+function resetModalTours() {
+    if (confirm('Сбросить обучение по модалкам (создание, редактирование, распределение)?')) {
+        const userId = state.currentUserId;
+        localStorage.removeItem('hasSeenModalTour_createEnvelope_' + userId);
+        localStorage.removeItem('hasSeenModalTour_editEnvelope_' + userId);
+        localStorage.removeItem('hasSeenModalTour_distribution_' + userId);
+        localStorage.removeItem('hasSeenModalTour_distributionStep2_' + userId);
+        alert('Обучение по модалкам сброшено!');
+    }
+}
+
+
+
+var currentTourId = null;
+var currentTourStepIndex = 0;
+
+function startTour(tourId) {
+    currentTourId = tourId;
+    currentTourStepIndex = 0;
+    
+    const overlay = document.getElementById('tourOverlay');
+    if (!overlay) return;
+    
+    overlay.style.display = 'block';
+    setTimeout(() => {
+        overlay.classList.add('active');
+        renderTourStep();
+    }, 10);
+    
+    // Перерисовываем при скролле и ресайзе
+    window.addEventListener('resize', renderTourStep);
+    window.addEventListener('scroll', renderTourStep, true);
+}
+
+
+function renderTourStep() {
+    const tour = tours[currentTourId];
+    if (!tour || currentTourStepIndex >= tour.length) {
+        finishTour();
+        return;
+    }
+    
+    const step = tour[currentTourStepIndex];
+    const targetEl = document.querySelector(step.target);
+    const spotlight = document.getElementById('tourSpotlight');
+    const tooltip = document.getElementById('tourTooltip');
+    
+    document.getElementById('tourTooltipTitle').textContent = step.title;
+    document.getElementById('tourTooltipText').textContent = step.text;
+    
+    const nextBtn = document.getElementById('tourNextBtn');
+    if (currentTourStepIndex === tour.length - 1) {
+        nextBtn.textContent = 'Завершить ✓';
+    } else {
+        nextBtn.textContent = 'Далее →';
+    }
+    
+    if (targetEl) {
+        // Проверяем, виден ли элемент
+        const rect = targetEl.getBoundingClientRect();
+        const isVisible = (rect.width > 0 && rect.height > 0 && 
+                          getComputedStyle(targetEl).display !== 'none' &&
+                          getComputedStyle(targetEl).visibility !== 'hidden');
+        
+        if (!isVisible) {
+            // Если элемент не виден, пропускаем этот шаг или показываем в центре
+            console.log('Элемент не виден, пропускаем шаг:', step.target);
+            nextTourStep();
+            return;
+        }
+        
+        // Прокручиваем к элементу, если он за пределами экрана
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Небольшая задержка, чтобы скролл успел завершиться
+        setTimeout(() => {
+            const rect = targetEl.getBoundingClientRect();
+            
+            // Позиционируем прожектор (через fixed)
+            spotlight.style.display = 'block';
+            spotlight.style.width = rect.width + 'px';
+            spotlight.style.height = rect.height + 'px';
+            spotlight.style.top = rect.top + 'px';
+            spotlight.style.left = rect.left + 'px';
+            
+            // Умное позиционирование тултипа
+            const tooltipWidth = 320;
+            const tooltipHeight = 200;
+            const gap = 20;
+            
+            let tooltipLeft, tooltipTop;
+            
+            // Проверяем, где больше места: справа или слева от элемента
+            const spaceRight = window.innerWidth - rect.right;
+            const spaceLeft = rect.left;
+            
+            if (spaceRight >= tooltipWidth + gap) {
+                // Показываем справа
+                tooltipLeft = rect.right + gap;
+                tooltipTop = rect.top;
+            } else if (spaceLeft >= tooltipWidth + gap) {
+                // Показываем слева
+                tooltipLeft = rect.left - tooltipWidth - gap;
+                tooltipTop = rect.top;
+            } else {
+                // Не влезает ни справа, ни слева — показываем снизу или сверху
+                const spaceBottom = window.innerHeight - rect.bottom;
+                if (spaceBottom >= tooltipHeight + gap) {
+                    tooltipLeft = rect.left;
+                    tooltipTop = rect.bottom + gap;
+                } else {
+                    tooltipLeft = rect.left;
+                    tooltipTop = rect.top - tooltipHeight - gap;
+                }
+            }
+            
+            // Ограничения по краям экрана (с запасом для мобильных)
+            const padding = 10;
+            tooltipLeft = Math.max(padding, Math.min(tooltipLeft, window.innerWidth - tooltipWidth - padding));
+            tooltipTop = Math.max(padding, Math.min(tooltipTop, window.innerHeight - tooltipHeight - padding));
+            
+            tooltip.style.left = tooltipLeft + 'px';
+            tooltip.style.top = tooltipTop + 'px';
+            tooltip.style.transform = 'none';
+        }, 400); // Увеличили задержку для надежности
+    } else {
+        spotlight.style.display = 'none';
+        tooltip.style.left = '50%';
+        tooltip.style.top = '50%';
+        tooltip.style.transform = 'translate(-50%, -50%)';
+    }
+}
+
+
+
+function nextTourStep() {
+    currentTourStepIndex++;
+    renderTourStep();
+}
+
+function skipTour() {
+    finishTour();
+}
+
+function finishTour() {
+    const overlay = document.getElementById('tourOverlay');
+    if (overlay) {
+        overlay.classList.remove('active');
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            document.getElementById('tourSpotlight').style.display = 'block';
+        }, 400);
+    }
+    
+    if (currentTourId) {
+        const userId = state.currentUserId;
+        localStorage.setItem('hasSeen' + capitalizeFirstLetter(currentTourId) + 'Tour_' + userId, 'true');
+    }
+    
+    window.removeEventListener('resize', renderTourStep);
+    window.removeEventListener('scroll', renderTourStep, true);
+    currentTourId = null;
+    currentTourStepIndex = 0;
+}
+
+
+
+
+function closeTour() {
+    finishTour();
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+
+
 // ===== INITIALIZATION =====
 function init() {
     console.log('🚀 Приложение запускается...');
@@ -165,11 +747,18 @@ function listenToFamily(code) {
             const isOnStartScreen = activeScreen && ['screen-start', 'screen-create-family', 'screen-join-family', 'screen-family-created'].indexOf(activeScreen.id) !== -1;
             
             if (isOnStartScreen) {
-                // Только что подключились — показываем выбор пользователя
                 showSelectUserScreen();
+                hideLoading();
             } else {
-                // Уже внутри приложения — просто обновляем данные
-                render();
+                console.log('🔍 Проверка обучения для пользователя:', state.currentUserId);
+                if (state.currentUserId && !localStorage.getItem('hasSeenOnboardingMaster_' + state.currentUserId)) {
+                    console.log('🎓 Показываем обучение для пользователя:', state.currentUserId);
+                    setTimeout(showOnboardingMaster, 500);
+                } else {
+                    console.log('✅ Обучение уже пройдено или пользователь не выбран');
+                    render();
+                }
+                hideLoading();
             }
         } else {
             console.error('❌ Документ семьи не найден в Firebase');
@@ -238,6 +827,7 @@ async function createFamily() {
     const name = nameInput ? nameInput.value.trim().toLowerCase().replace(/[^a-z0-9а-яё]/g, '') : '';
     if (!name) { showError('createFamilyError', 'Введите название (только буквы и цифры)'); return; }
     isSaving = true;
+    showLoading();
     const suffix = Math.random().toString(36).substring(2, 8);
     const code = name + '-' + suffix;
     try {
@@ -252,8 +842,12 @@ async function createFamily() {
     } catch (e) {
         console.error(e);
         showError('createFamilyError', 'Ошибка создания. Попробуйте другое название.');
-    } finally { isSaving = false; }
+    } finally { 
+        isSaving = false; 
+        hideLoading();
+    }
 }
+
 
 async function joinFamily() {
     if (isSaving) return;
@@ -263,6 +857,7 @@ async function joinFamily() {
     if (code.indexOf('-') === -1 || code.length < 5) { showError('joinFamilyError', 'Неверный формат кода'); return; }
     hideError('joinFamilyError');
     isSaving = true;
+    showLoading();
     try {
         console.log('🔗 Пытаемся подключиться к семье:', code);
         const docRef = db.collection('families').doc(code);
@@ -270,16 +865,25 @@ async function joinFamily() {
         if (doc.exists) {
             console.log('✅ Семья найдена, подключаемся');
             localStorage.setItem('familyCode', code);
+            // НЕ вызываем hideLoading здесь — он вызовется после первого onSnapshot
             listenToFamily(code);
         } else {
             console.log('❌ Семья не найдена');
             showError('joinFamilyError', 'Семья не найдена. Проверьте код.');
+            hideLoading();
         }
     } catch (e) {
         console.error(e);
         showError('joinFamilyError', 'Ошибка подключения. Проверьте интернет.');
-    } finally { isSaving = false; }
+        hideLoading();
+    } finally { 
+        isSaving = false; 
+        // hideLoading() вызывается только при ошибке, при успехе — в listenToFamily
+    }
 }
+
+
+
 
 function enterFamily() {
     if (state.users.length === 0) switchScreen('onboarding');
@@ -319,14 +923,26 @@ async function completeOnboarding() {
     state.users.push(newUser);
     state.currentUserId = newUser.id;
     localStorage.setItem('currentUserId', newUser.id);
+    isSaving = true;
+    showLoading();
     try {
         await saveState();
-        switchScreen('home');
+        
+        // Проверяем флаг для нового пользователя
+        if (!localStorage.getItem('hasSeenOnboardingMaster_' + newUser.id)) {
+            switchScreen('home');
+            setTimeout(showOnboardingMaster, 500);
+        } else {
+            switchScreen('home');
+        }
     } catch (e) {
         console.error(e);
         alert('Ошибка сохранения. Попробуйте ещё раз.');
         if (btn) { btn.disabled = false; btn.textContent = 'Создать →'; }
-    } finally { isSaving = false; }
+    } finally { 
+        isSaving = false; 
+        hideLoading();
+    }
 }
 
 
@@ -376,8 +992,17 @@ function selectExistingUser(userId) {
     state.currentUserId = userId;
     localStorage.setItem('currentUserId', userId);
     console.log('✅ Выбран пользователь:', getUserById(userId).name);
-    switchScreen('home');
+    
+    // Проверяем флаг конкретно для этого пользователя
+    if (!localStorage.getItem('hasSeenOnboardingMaster_' + userId)) {
+        switchScreen('home');
+        setTimeout(showOnboardingMaster, 500);
+    } else {
+        switchScreen('home');
+    }
 }
+
+
 
 
 // ===== SCREEN MANAGEMENT =====
@@ -418,7 +1043,22 @@ function switchScreen(screenId) {
     } else if (screenId === 'home') {
         render();
     }
+    // Логика запуска интерактивного тура при первом переходе на вкладку
+    const userId = state.currentUserId;
+    if (screenId === 'home' && !localStorage.getItem('hasSeenMainTour_' + userId)) {
+        setTimeout(() => startTour('main'), 600);
+    } else if (screenId === 'stats' && !localStorage.getItem('hasSeenStatsTour_' + userId)) {
+        setTimeout(() => startTour('stats'), 600);
+    } else if (screenId === 'history' && !localStorage.getItem('hasSeenHistoryTour_' + userId)) {
+        setTimeout(() => startTour('history'), 600);
+    } else if (screenId === 'settings' && !localStorage.getItem('hasSeenSettingsTour_' + userId)) {
+        setTimeout(() => startTour('settings'), 600);
+    } else if (screenId === 'users' && !localStorage.getItem('hasSeenUsersTour_' + userId)) {
+        setTimeout(() => startTour('users'), 600);
+    }
+    
     window.scrollTo(0, 0);
+
 }
 
 // ===== USER MANAGEMENT =====
@@ -1117,7 +1757,7 @@ function openCreateEnvelope() {
     currentEnvelopeId = null;
     currentEnvelopePriorityDenom = null;
     isUserPriorityEnvelope = false;
-    selectedEmoji = '📁';
+    selectedEmoji = '';
     currentEnvelopeType = 'personal';
     document.getElementById('envelopeModalTitle').textContent = '📁 Создать конверт';
     document.getElementById('envelopeName').value = '';
@@ -1137,7 +1777,13 @@ function openCreateEnvelope() {
     updatePriorityEnvelopeToggleVisibility();
     renderPriorityEnvelopeToggle();
     document.getElementById('envelopeModal').classList.add('active');
+    
+    const userId = state.currentUserId;
+    if (!localStorage.getItem('hasSeenModalTour_createEnvelope_' + userId)) {
+        setTimeout(() => startModalTour('createEnvelope'), 400);
+    }
 }
+
 
 function openEnvelopeDetail(id) {
     currentEnvelopeId = id;
@@ -1161,7 +1807,6 @@ function openEnvelopeDetail(id) {
     renderDetailEnvelopePercentFields(env);
     document.getElementById('detailEnvelopeBillsSummary').innerHTML = renderBillsList(env.bills);
     
-    // Логика отображения кнопки приоритетного конверта
     const detailPrioContainer = document.getElementById('detailPriorityEnvelopeContainer');
     if (env.type === 'personal' && env.owners && env.owners[0] === state.currentUserId) {
         detailPrioContainer.style.display = 'block';
@@ -1171,7 +1816,13 @@ function openEnvelopeDetail(id) {
     }
     
     document.getElementById('envelopeDetailModal').classList.add('active');
+    
+    const userId = state.currentUserId;
+    if (!localStorage.getItem('hasSeenModalTour_editEnvelope_' + userId)) {
+        setTimeout(() => startModalTour('editEnvelope'), 400);
+    }
 }
+
 
 
 async function saveEnvelope() {
@@ -1239,7 +1890,8 @@ async function saveEnvelope() {
     await saveState();
     isSaving = false;
     closeModal('envelopeModal');
-    render(); // Обновляем главную страницу сразу
+    render();
+    refreshStats();
 }
 
 
@@ -1445,7 +2097,7 @@ function openEnvelopeTransfer() {
     others.forEach(function(e) {
         var opt = document.createElement('option');
         opt.value = e.id;
-        opt.textContent = (e.icon || '📁') + ' ' + e.name + ' (' + getEnvelopeOwnerLabel(e) + ')';
+        opt.textContent = (e.icon || '📁') + ' ' + e.name;
         sel.appendChild(opt);
     });
     document.getElementById('envelopeTransferCount').value = '1';
@@ -1510,7 +2162,13 @@ function openDistribution() {
     BILL_DENOMINATIONS.forEach(function(d) { b[d] = 0; });
     renderBillCounters('distributionBillsInput', b);
     document.getElementById('distributionModal').classList.add('active');
+    
+    const userId = state.currentUserId;
+    if (!localStorage.getItem('hasSeenModalTour_distribution_' + userId)) {
+        setTimeout(() => startModalTour('distribution'), 400);
+    }
 }
+
 
 function checkDistributionSum() {
     var amt = parseFloat(document.getElementById('distributionTotalAmount').value) || 0;
@@ -1527,7 +2185,14 @@ function checkDistributionSum() {
     document.getElementById('distributionStep2').classList.remove('hidden');
     document.getElementById('distributionFooter1').style.display = 'none';
     document.getElementById('distributionFooter2').style.display = 'flex';
+    
+    const userId = state.currentUserId;
+    if (!localStorage.getItem('hasSeenModalTour_distributionStep2_' + userId)) {
+        setTimeout(() => startModalTour('distributionStep2'), 400);
+    }
 }
+
+
 
 function runDistributionAlgorithm(total, avail) {
     var uid = state.currentUserId;
@@ -1686,7 +2351,7 @@ function openTransferModal(srcId, d, n) {
         if (e.id !== srcId) {
             var opt = document.createElement('option');
             opt.value = e.id;
-            opt.textContent = (e.icon || '') + ' ' + e.name + ' (' + getEnvelopeOwnerLabel(e) + ')';
+            opt.textContent = (e.icon || '') + ' ' + e.name;
             sel.appendChild(opt);
         }
     });
@@ -1741,15 +2406,20 @@ async function finalizeDistribution() {
     BILL_DENOMINATIONS.forEach(function(d) { state.unusedBills[d] = distributionData.remainingBank[d] || 0; });
     closeModal('distributionModal');
     isSaving = true;
+    showLoading();
     try {
         await saveState();
+        render();
+        refreshStats();
     } catch (e) {
         console.error("Ошибка сохранения:", e);
         alert("Данные распределены локально, но не удалось сохранить в облако. Проверьте интернет.");
     } finally {
         isSaving = false;
+        hideLoading();
     }
 }
+
 
 
 // ===== STATISTICS =====
@@ -1975,7 +2645,28 @@ function renderKPI() {
         if (tx.amount > maxOp) maxOp = tx.amount;
         days.add(new Date(tx.date).toDateString());
     });
-    var balance = inc - exp;
+    
+    // Реальный баланс: сумма всех денег в конвертах + банк
+    // С учётом фильтров по пользователю и типу конверта
+    var balance = 0;
+    
+    // Добавляем баланс банка (неиспользованные купюры)
+    // Банк показываем, только если нет фильтра по конкретным конвертам
+    if (selectedEnvelopes.length === 0) {
+        balance += calculateUnusedBillsTotal();
+    }
+    
+    // Добавляем баланс конвертов с учётом фильтров
+    var envelopesToShow = getEnvelopesByFilters();
+    if (selectedEnvelopes.length > 0) {
+        envelopesToShow = envelopesToShow.filter(function(e) { 
+            return selectedEnvelopes.indexOf(e.id) !== -1; 
+        });
+    }
+    envelopesToShow.forEach(function(env) {
+        balance += calculateEnvelopeTotal(env.bills);
+    });
+    
     var avgCheck = operations > 0 ? Math.round((inc + exp) / operations) : 0;
     var prevInc = 0, prevExp = 0;
     previous.forEach(function(tx) {
@@ -1996,7 +2687,7 @@ function renderKPI() {
     document.getElementById('kpiActiveDays').textContent = days.size;
     var incomeTrendEl = document.getElementById('kpiIncomeTrend');
     if (prevInc > 0) {
-        incomeTrendEl.textContent = (incomeTrend >= 0 ? '📈 +' : '📉 ') + incomeTrend + '%';
+        incomeTrendEl.textContent = (incomeTrend >= 0 ? ' +' : '📉 ') + incomeTrend + '%';
         incomeTrendEl.className = 'kpi-trend ' + (incomeTrend >= 0 ? 'positive' : 'negative');
     } else incomeTrendEl.textContent = '';
     var expenseTrendEl = document.getElementById('kpiExpenseTrend');
@@ -2005,6 +2696,7 @@ function renderKPI() {
         expenseTrendEl.className = 'kpi-trend ' + (expenseTrend <= 0 ? 'positive' : 'negative');
     } else expenseTrendEl.textContent = '';
 }
+
 
 function renderBalanceChart() {
     var filtered = getFilteredTransactions();
@@ -2447,6 +3139,40 @@ async function clearAllData() {
         showSuccessMessage('settingsMessage', 'Все данные удалены');
     }
 }
+
+function resetTour(tourId) {
+    const userId = state.currentUserId;
+    localStorage.removeItem('hasSeen' + capitalizeFirstLetter(tourId) + 'Tour_' + userId);
+    alert('Тур "' + tourId + '" сброшен. Перейдите на соответствующую вкладку, чтобы пройти его снова.');
+}
+
+
+
+function resetAllTours() {
+    if (confirm('Сбросить все интерактивные туры по интерфейсу?')) {
+        const userId = state.currentUserId;
+        localStorage.removeItem('hasSeenMainTour_' + userId);
+        localStorage.removeItem('hasSeenStatsTour_' + userId);
+        localStorage.removeItem('hasSeenHistoryTour_' + userId);
+        localStorage.removeItem('hasSeenSettingsTour_' + userId);
+        localStorage.removeItem('hasSeenUsersTour_' + userId);
+        alert('Все туры сброшены!');
+    }
+}
+
+
+
+// ===== ИНДИКАТОР ЗАГРУЗКИ =====
+function showLoading() {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.classList.add('active');
+}
+
+function hideLoading() {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.classList.remove('active');
+}
+
 
 // ===== HELPERS =====
 function closeModal(id) { var el = document.getElementById(id); if (el) el.classList.remove('active'); }
