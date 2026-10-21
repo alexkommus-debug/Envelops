@@ -480,6 +480,22 @@
                         </div>
                     </div>
 
+                    <div class="settings-page-section">
+                        <h3> Обучение и подсказки</h3>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">Сбросьте прогресс обучения, чтобы пройти его заново.</p>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button class="btn btn-secondary" onclick="resetTour('main')">Главная</button>
+                            <button class="btn btn-secondary" onclick="resetTour('stats')">Статистика</button>
+                            <button class="btn btn-secondary" onclick="resetTour('history')">История</button>
+                            <button class="btn btn-secondary" onclick="resetTour('settings')">Настройки</button>
+                            <button class="btn btn-secondary" onclick="resetTour('users')">Участники</button>
+                            <button class="btn btn-danger" onclick="resetAllTours()">Сбросить все туры</button>
+                            <button class="btn btn-secondary" onclick="resetModalTours()">Сбросить обучение модалок</button>
+                        </div>
+                    </div>
+
+
+
                     <div class="settings-page-section danger-zone">
                         <h3>⚠️ Опасная зона</h3>
                         <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 12px;">Все данные будут безвозвратно удалены. Это действие нельзя отменить.</p>
@@ -885,6 +901,59 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="script.js"></script>
+
+        <!-- ОВЕРЛЕЙ: МАСТЕР ПЕРВОГО ВХОДА -->
+    <div id="onboardingMasterOverlay" class="onboarding-overlay">
+        <div class="onboarding-master-card">
+            <div class="onboarding-progress-dots" id="onboardingDots">
+                <!-- JS заполнит точки прогресса -->
+            </div>
+            
+            <div class="onboarding-content-wrapper" id="onboardingContentWrapper">
+                <div class="onboarding-icon-large" id="onboardingIcon"></div>
+                <h2 class="onboarding-title" id="onboardingTitle">Загрузка...</h2>
+                <p class="onboarding-text" id="onboardingText">Пожалуйста, подождите.</p>
+            </div>
+
+            <div class="onboarding-footer">
+                <button class="btn btn-secondary" onclick="skipOnboardingMaster()">Пропустить обучение</button>
+                <button class="btn btn-primary" id="onboardingNextBtn" onclick="nextOnboardingStep()">Далее →</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- ОВЕРЛЕЙ: ИНТЕРАКТИВНЫЙ ТУР ПО ИНТЕРФЕЙСУ -->
+    <div id="tourOverlay" class="tour-overlay">
+        <div class="tour-spotlight" id="tourSpotlight"></div>
+        <div class="tour-tooltip" id="tourTooltip">
+            <h3 class="tour-tooltip-title" id="tourTooltipTitle">Заголовок</h3>
+            <p class="tour-tooltip-text" id="tourTooltipText">Текст подсказки</p>
+            <div class="tour-tooltip-footer">
+                <button class="btn btn-secondary btn-sm" onclick="skipTour()">Пропустить тур</button>
+                <button class="btn btn-primary btn-sm" id="tourNextBtn" onclick="nextTourStep()">Далее →</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- ОВЕРЛЕЙ: ТУР ПО МОДАЛКАМ -->
+    <div id="modalTourOverlay" class="modal-tour-overlay">
+        <div class="tour-spotlight" id="modalTourSpotlight"></div>
+        <div class="tour-tooltip" id="modalTourTooltip">
+            <h3 class="tour-tooltip-title" id="modalTourTooltipTitle">Заголовок</h3>
+            <p class="tour-tooltip-text" id="modalTourTooltipText">Текст подсказки</p>
+            <div class="tour-tooltip-footer">
+                <button class="btn btn-secondary btn-sm" onclick="skipModalTour()">Пропустить</button>
+                <button class="btn btn-primary btn-sm" id="modalTourNextBtn" onclick="nextModalTourStep()">Далее →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ИНДИКАТОР ЗАГРУЗКИ -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Загрузка...</div>
+    </div>
+
 
 </body>
 </html>
