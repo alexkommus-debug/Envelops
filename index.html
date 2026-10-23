@@ -481,18 +481,26 @@
                     </div>
 
                     <div class="settings-page-section">
-                        <h3> Обучение и подсказки</h3>
-                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">Сбросьте прогресс обучения, чтобы пройти его заново.</p>
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <button class="btn btn-secondary" onclick="resetTour('main')">Главная</button>
-                            <button class="btn btn-secondary" onclick="resetTour('stats')">Статистика</button>
-                            <button class="btn btn-secondary" onclick="resetTour('history')">История</button>
-                            <button class="btn btn-secondary" onclick="resetTour('settings')">Настройки</button>
-                            <button class="btn btn-secondary" onclick="resetTour('users')">Участники</button>
-                            <button class="btn btn-danger" onclick="resetAllTours()">Сбросить все туры</button>
-                            <button class="btn btn-secondary" onclick="resetModalTours()">Сбросить обучение модалок</button>
+                        <h3>🎓 Обучение и подсказки</h3>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">Нажмите на кнопку, чтобы перейти к нужному разделу и запустить обучение.</p>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+                            <button class="btn btn-secondary btn-full" style="justify-content: flex-start;" onclick="startInteractiveTour('main')">🏠 Как пользоваться главным экраном?</button>
+                            <button class="btn btn-secondary btn-full" style="justify-content: flex-start;" onclick="startInteractiveTour('stats')">📊 Как пользоваться статистикой?</button>
+                            <button class="btn btn-secondary btn-full" style="justify-content: flex-start;" onclick="startInteractiveTour('history')">📜 Как пользоваться историей?</button>
+                            <button class="btn btn-secondary btn-full" style="justify-content: flex-start;" onclick="startInteractiveTour('settings')">⚙️ Как пользоваться настройками?</button>
+                            <button class="btn btn-secondary btn-full" style="justify-content: flex-start;" onclick="startInteractiveTour('users')">👥 Как управлять участниками?</button>
                         </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+                            <button class="btn btn-primary btn-full" style="justify-content: flex-start;" onclick="startInteractiveTour('distribute')">💰 Как разложить деньги?</button>
+                            <button class="btn btn-primary btn-full" style="justify-content: flex-start;" onclick="startInteractiveTour('create')">📁 Как создать конверт?</button>
+                            <button class="btn btn-primary btn-full" style="justify-content: flex-start;" onclick="startInteractiveTour('edit')">✏️ Как редактировать конверт?</button>
+                        </div>
+
+                        <button class="btn btn-danger btn-full" onclick="resetAllLearning()">🔄 Сбросить все обучение</button>
                     </div>
+
 
 
 
