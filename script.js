@@ -179,7 +179,7 @@ var tours = {
     main: [
         {
             target: '.header',
-            title: ' Общий баланс',
+            title: '🪎 Общий баланс',
             text: 'Здесь отображается общая сумма наличных по всем конвертам. Также вы видите разбивку: ваши личные конверты, общие и нераспределенный остаток в "банке".'
         },
         {
@@ -356,52 +356,32 @@ function renderModalTourStep() {
             return;
         }
         
-        // НОВАЯ ЛОГИКА: прокручиваем модалку к элементу
-        const modal = targetEl.closest('.modal');
-        if (modal) {
-            const modalRect = modal.getBoundingClientRect();
-            const targetRelativeTop = rect.top - modalRect.top + modal.scrollTop;
-            const targetRelativeBottom = rect.bottom - modalRect.top + modal.scrollTop;
-            const modalHeight = modal.clientHeight;
-            
-            // Если элемент не виден в модалке — прокручиваем
-            if (rect.top < modalRect.top || rect.bottom > modalRect.bottom) {
-                const scrollTo = targetRelativeTop - (modalHeight / 2) + (rect.height / 2);
-                modal.scrollTo({
-                    top: scrollTo,
-                    behavior: 'smooth'
-                });
-            }
-        }
+        // Прокручиваем элемент в видимую область (работает и для модалок)
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
         
-        // Ждём завершения прокрутки
         setTimeout(() => {
-            const rect = targetEl.getBoundingClientRect();
-            
-            // Позиционируем прожектор
+            const newRect = targetEl.getBoundingClientRect();
             spotlight.style.display = 'block';
-            spotlight.style.width = rect.width + 'px';
-            spotlight.style.height = rect.height + 'px';
-            spotlight.style.top = rect.top + 'px';
-            spotlight.style.left = rect.left + 'px';
+            spotlight.style.width = newRect.width + 'px';
+            spotlight.style.height = newRect.height + 'px';
+            spotlight.style.top = newRect.top + 'px';
+            spotlight.style.left = newRect.left + 'px';
             
-            // Умное позиционирование тултипа
             const tooltipWidth = 320;
             const tooltipHeight = 200;
             const gap = 15;
             
             let tooltipLeft, tooltipTop;
-            const spaceBottom = window.innerHeight - rect.bottom;
+            const spaceBottom = window.innerHeight - newRect.bottom;
             
             if (spaceBottom >= tooltipHeight + gap) {
-                tooltipLeft = rect.left;
-                tooltipTop = rect.bottom + gap;
+                tooltipLeft = newRect.left;
+                tooltipTop = newRect.bottom + gap;
             } else {
-                tooltipLeft = rect.left;
-                tooltipTop = rect.top - tooltipHeight - gap;
+                tooltipLeft = newRect.left;
+                tooltipTop = newRect.top - tooltipHeight - gap;
             }
             
-            // Ограничения по краям
             const padding = 10;
             tooltipLeft = Math.max(padding, Math.min(tooltipLeft, window.innerWidth - tooltipWidth - padding));
             tooltipTop = Math.max(padding, Math.min(tooltipTop, window.innerHeight - tooltipHeight - padding));
@@ -409,7 +389,7 @@ function renderModalTourStep() {
             tooltip.style.left = tooltipLeft + 'px';
             tooltip.style.top = tooltipTop + 'px';
             tooltip.style.transform = 'none';
-        }, 500); // Увеличили задержку для прокрутки
+        }, 600); // Задержка для завершения анимации скролла
     } else {
         spotlight.style.display = 'none';
         tooltip.style.left = '50%';
@@ -417,6 +397,7 @@ function renderModalTourStep() {
         tooltip.style.transform = 'translate(-50%, -50%)';
     }
 }
+
 
 
 function nextModalTourStep() {
@@ -2908,17 +2889,30 @@ function getFilteredHistoryTransactions() {
 function renderHistoryMainContent() {
     var txs = getFilteredHistoryTransactions();
     var putCount = 0, takeCount = 0, transferCount = 0;
+    var batchIds = new Set();
+    
     txs.forEach(function(tx) {
-        if (tx.type === 'put') putCount++;
-        else if (tx.type === 'take') takeCount++;
-        else if (tx.type === 'transfer') transferCount++;
+        if (tx.type === 'put') {
+            putCount++;
+        } else if (tx.type === 'take') {
+            takeCount++;
+        } else if (tx.type === 'transfer') {
+            transferCount++;
+        } else if (tx.type === 'distribute' && tx.batchId) {
+            batchIds.add(tx.batchId); // Считаем уникальные распределения
+        }
     });
+    
+    // Добавляем количество уникальных распределений к общему числу пополнений
+    putCount += batchIds.size;
+    
     document.getElementById('historyTotalOps').textContent = txs.length;
     document.getElementById('historyPutCount').textContent = putCount;
     document.getElementById('historyTakeCount').textContent = takeCount;
     document.getElementById('historyTransferCount').textContent = transferCount;
     renderHistoryMainList();
 }
+
 
 function renderHistoryMainList() {
     var c = document.getElementById('historyMainList');
@@ -3172,6 +3166,212 @@ function hideLoading() {
     const overlay = document.getElementById('loadingOverlay');
     if (overlay) overlay.classList.remove('active');
 }
+
+
+// ===== ИНТЕРАКТИВНОЕ ОБУЧЕНИЕ ИЗ НАСТРОЕК =====
+
+function showInteractiveTooltip(target, text, callback) {
+    const getElement = () => {
+        if (typeof target === 'string') {
+            return document.querySelector(target);
+        }
+        return target;
+    };
+    
+    const el = getElement();
+    if (!el) {
+        console.error('Элемент не найден:', target);
+        return;
+    }
+    
+    // Убрали проверку на нулевые размеры — просто пробуем показать
+    const rect = el.getBoundingClientRect();
+    
+    // Создаем оверлей
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:10001;pointer-events:none;';
+    
+    const spotlight = document.createElement('div');
+    spotlight.className = 'tour-spotlight';
+    spotlight.style.zIndex = '10002';
+    spotlight.style.pointerEvents = 'none';
+    
+    const tooltip = document.createElement('div');
+    tooltip.className = 'tour-tooltip';
+    tooltip.style.zIndex = '10003';
+    tooltip.style.pointerEvents = 'none';
+    tooltip.innerHTML = '<p class="tour-tooltip-text" style="text-align:center; margin-bottom:0;">' + text + '</p>';
+    
+    overlay.appendChild(spotlight);
+    overlay.appendChild(tooltip);
+    document.body.appendChild(overlay);
+    
+    const updatePosition = () => {
+        const rect = el.getBoundingClientRect();
+        spotlight.style.display = 'block';
+        spotlight.style.width = rect.width + 'px';
+        spotlight.style.height = rect.height + 'px';
+        spotlight.style.top = rect.top + 'px';
+        spotlight.style.left = rect.left + 'px';
+        
+        const tooltipWidth = Math.min(280, window.innerWidth - 20);
+        let tLeft = rect.left + (rect.width / 2) - (tooltipWidth / 2);
+        tLeft = Math.max(10, Math.min(tLeft, window.innerWidth - tooltipWidth - 10));
+        
+        let tTop = rect.bottom + 15;
+        if (tTop + 100 > window.innerHeight) {
+            tTop = rect.top - 110;
+        }
+        
+        tooltip.style.left = tLeft + 'px';
+        tooltip.style.top = tTop + 'px';
+        tooltip.style.width = tooltipWidth + 'px';
+    };
+    
+    updatePosition();
+    window.addEventListener('resize', updatePosition);
+    window.addEventListener('scroll', updatePosition, true);
+    
+    const cleanup = () => {
+        if (document.body.contains(overlay)) {
+            document.body.removeChild(overlay);
+        }
+        window.removeEventListener('resize', updatePosition);
+        window.removeEventListener('scroll', updatePosition, true);
+        if (callback) callback();
+    };
+    
+    el.addEventListener('click', cleanup, true);
+    
+    setTimeout(() => {
+        if (document.body.contains(overlay)) {
+            cleanup();
+        }
+    }, 5000);
+}
+
+
+function startInteractiveTour(type) {
+    if (type === 'main') {
+        const userId = state.currentUserId;
+        localStorage.removeItem('hasSeenMainTour_' + userId);
+        switchScreen('home');
+        setTimeout(() => {
+            showInteractiveTooltip('.header', 'Это главный экран. Здесь отображается общий баланс и все ваши конверты.', () => {});
+        }, 500);
+    }
+    else if (type === 'stats') {
+        const userId = state.currentUserId;
+        localStorage.removeItem('hasSeenStatsTour_' + userId);
+        switchScreen('stats');
+        setTimeout(() => {
+            showInteractiveTooltip('.stats-filters', 'Это раздел статистики. Здесь вы можете анализировать свои расходы и доходы.', () => {});
+        }, 500);
+    }
+    else if (type === 'history') {
+        const userId = state.currentUserId;
+        localStorage.removeItem('hasSeenHistoryTour_' + userId);
+        switchScreen('history');
+        setTimeout(() => {
+            showInteractiveTooltip('.operation-type-filter', 'Это раздел истории. Здесь записаны все операции с вашими конвертами.', () => {});
+        }, 500);
+    }
+    else if (type === 'settings') {
+        const userId = state.currentUserId;
+        localStorage.removeItem('hasSeenSettingsTour_' + userId);
+        switchScreen('settings');
+        setTimeout(() => {
+            showInteractiveTooltip('.settings-page-section:first-child', 'Это раздел настроек. Здесь вы можете управлять семьей и обучением.', () => {});
+        }, 500);
+    }
+    else if (type === 'users') {
+        const userId = state.currentUserId;
+        localStorage.removeItem('hasSeenUsersTour_' + userId);
+        switchScreen('users');
+        setTimeout(() => {
+            showInteractiveTooltip('.users-list', 'Это раздел участников. Здесь вы можете управлять членами семьи.', () => {});
+        }, 500);
+    }
+    else if (type === 'distribute') {
+        if (getVisibleEnvelopes().length === 0) {
+            alert('Сначала создайте хотя бы один конверт, чтобы распределить деньги.');
+            return;
+        }
+        const userId = state.currentUserId;
+        localStorage.removeItem('hasSeenModalTour_distribution_' + userId);
+        localStorage.removeItem('hasSeenModalTour_distributionStep2_' + userId);
+        switchScreen('home');
+        setTimeout(() => {
+            showInteractiveTooltip('#fabDistribution', 'Нажмите на кнопку "Разложить", чтобы начать распределение денег.', () => {});
+        }, 500);
+    }
+    else if (type === 'create') {
+        const userId = state.currentUserId;
+        localStorage.removeItem('hasSeenModalTour_createEnvelope_' + userId);
+        switchScreen('home');
+        setTimeout(() => {
+            // Ищем только ВИДИМЫЙ элемент
+            let target = null;
+            
+            // Проверяем #createEnvelopeBtn (виден, когда есть конверты)
+            const createBtn = document.getElementById('createEnvelopeBtn');
+            if (createBtn && createBtn.offsetParent !== null) {
+                target = createBtn;
+            }
+            
+            // Проверяем кнопку в empty-state (видна, когда нет конвертов)
+            if (!target) {
+                const emptyBtn = document.querySelector('.empty-state .btn-primary');
+                if (emptyBtn && emptyBtn.offsetParent !== null) {
+                    target = emptyBtn;
+                }
+            }
+            
+            if (target) {
+                showInteractiveTooltip(target, 'Нажмите, чтобы создать новый конверт.', () => {});
+            } else {
+                console.error('Видимая кнопка создания конверта не найдена');
+            }
+        }, 600);
+    }
+    else if (type === 'edit') {
+        const envelopes = getVisibleEnvelopes();
+        if (envelopes.length === 0) {
+            alert('Сначала создайте хотя бы один конверт, чтобы его редактировать.');
+            return;
+        }
+        const userId = state.currentUserId;
+        localStorage.removeItem('hasSeenModalTour_editEnvelope_' + userId);
+        switchScreen('home');
+        setTimeout(() => {
+            const firstCard = document.querySelector('.envelope-card');
+            if (firstCard) {
+                showInteractiveTooltip(firstCard, 'Нажмите на этот конверт, чтобы открыть его настройки.', () => {});
+            } else {
+                alert('Конверты не найдены');
+            }
+        }, 500);
+    }
+}
+
+function resetAllLearning() {
+    if (confirm('Сбросить ВСЕ обучение (интерфейс и модалки)?')) {
+        const userId = state.currentUserId;
+        localStorage.removeItem('hasSeenOnboardingMaster_' + userId);
+        localStorage.removeItem('hasSeenMainTour_' + userId);
+        localStorage.removeItem('hasSeenStatsTour_' + userId);
+        localStorage.removeItem('hasSeenHistoryTour_' + userId);
+        localStorage.removeItem('hasSeenSettingsTour_' + userId);
+        localStorage.removeItem('hasSeenUsersTour_' + userId);
+        localStorage.removeItem('hasSeenModalTour_createEnvelope_' + userId);
+        localStorage.removeItem('hasSeenModalTour_editEnvelope_' + userId);
+        localStorage.removeItem('hasSeenModalTour_distribution_' + userId);
+        localStorage.removeItem('hasSeenModalTour_distributionStep2_' + userId);
+        alert('Все обучение сброшено! Перезагрузите страницу или перейдите на главный экран.');
+    }
+}
+
+
 
 
 // ===== HELPERS =====
