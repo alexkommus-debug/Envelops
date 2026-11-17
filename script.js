@@ -1650,7 +1650,7 @@ function updatePriorityEnvelopeToggleVisibility() {
         container.style.display = 'block';
     } else if (currentEnvelopeType === 'personal' && currentEnvelopeId) {
         const env = state.envelopes.find(e => e.id === currentEnvelopeId);
-        if (env && env.owners && env.owners[0] === state.currentUserId) container.style.display = 'block';
+        if (env && env.owners && env.owners.indexOf(state.currentUserId) !== -1) container.style.display = 'block';
         else container.style.display = 'none';
     } else {
         container.style.display = 'none';
@@ -1792,7 +1792,7 @@ function openEnvelopeDetail(id) {
     document.getElementById('detailEnvelopeBillsSummary').innerHTML = renderBillsList(env.bills);
     
     const detailPrioContainer = document.getElementById('detailPriorityEnvelopeContainer');
-    if (env.type === 'personal' && env.owners && env.owners[0] === state.currentUserId) {
+    if (env.type === 'personal' && env.owners && env.owners.indexOf(state.currentUserId) !== -1) {
         detailPrioContainer.style.display = 'block';
         renderDetailPriorityEnvelopeToggle(env);
     } else {
@@ -2939,7 +2939,12 @@ function renderHistoryMainList() {
     var c = document.getElementById('historyMainList');
     if (!c) return;
     c.innerHTML = '';
-    var txs = getFilteredHistoryTransactions().sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
+    var transactionOrder = new Map();
+    state.transactions.forEach(function(tx, index) { transactionOrder.set(tx.id, index); });
+    var txs = getFilteredHistoryTransactions().sort(function(a, b) {
+        var dateDifference = new Date(b.date) - new Date(a.date);
+        return dateDifference || transactionOrder.get(b.id) - transactionOrder.get(a.id);
+    });
     var searchInput = document.getElementById('historySearchInput');
     var searchQuery = searchInput ? searchInput.value.trim().toLowerCase() : '';
     if (searchQuery) {
@@ -2967,7 +2972,9 @@ function renderHistoryMainList() {
         }
     });
     
-    // Рендерим сгруппированные транзакции
+    var historyItems = [];
+
+    // Собираем распределения и отдельные операции в общий список.
     Object.keys(groups).forEach(function(batchId) {
         var group = groups[batchId];
         var totalAmount = group.reduce(function(sum, tx) { return sum + tx.amount; }, 0);
@@ -2999,7 +3006,6 @@ function renderHistoryMainList() {
                 div.classList.toggle('expanded');
             }
         };
-        c.appendChild(div);
         
         // Создаем контейнер для дочерних элементов
         var childrenDiv = document.createElement('div');
@@ -3022,7 +3028,11 @@ function renderHistoryMainList() {
             childrenDiv.appendChild(childDiv);
         });
 
-        c.appendChild(childrenDiv);
+        historyItems.push({
+            date: new Date(firstTx.date),
+            order: transactionOrder.get(firstTx.id),
+            elements: [div, childrenDiv]
+        });
     });
     
     // Рендерим одиночные транзакции
@@ -3055,7 +3065,18 @@ function renderHistoryMainList() {
             commentHtml +
         '</div>' +
         '<div class="history-item-amount ' + amountClass + '">' + amountPrefix + formatMoney(tx.amount) + '</div>';
-        c.appendChild(div);
+        historyItems.push({
+            date: new Date(tx.date),
+            order: transactionOrder.get(tx.id),
+            elements: [div]
+        });
+    });
+
+    historyItems.sort(function(a, b) {
+        return b.date - a.date || b.order - a.order;
+    });
+    historyItems.forEach(function(item) {
+        item.elements.forEach(function(element) { c.appendChild(element); });
     });
 }
 
