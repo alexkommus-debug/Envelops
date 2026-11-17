@@ -217,17 +217,7 @@
                                 <div class="balance-item-label">Общие конверты</div>
                                 <div class="balance-item-value" id="sharedBalance">0 ₽</div>
                             </div>
-                            <div class="balance-item bank">
-                                <div class="balance-item-label">Не распределено</div>
-                                <div class="balance-item-value" id="bankBalance">0 ₽</div>
-                            </div>
                         </div>
-                    </div>
-
-                    <div class="unused-bills" id="unusedBillsSection">
-                        <div class="unused-bills-header"><h3>🏦 Банк неиспользованных купюр</h3></div>
-                        <div class="unused-bills-total" id="unusedTotal">0 ₽</div>
-                        <div class="unused-bills-composition" id="unusedComposition"></div>
                     </div>
 
                     <div class="envelopes-section">
@@ -719,50 +709,51 @@
                     </div>
                 </div>
 
-                <!-- СЕКЦИЯ 2: НАСТРОЙКИ РАСПРЕДЕЛЕНИЯ -->
-                <div class="modal-section">
-                    <div class="modal-section-title">⚙️ Настройки распределения</div>
-                    
-                    <div class="form-group form-row">
-                        <div class="form-group-half">
-                            <label class="form-label">Округление</label>
-                            <select class="form-select" id="detailEnvelopeRoundDirection">
-                                <option value="standard">Стандартное</option>
-                                <option value="up">Всегда вверх</option>
-                                <option value="down">Всегда вниз</option>
-                            </select>
+                <!-- СЕКЦИЯ 2: НАСТРОЙКИ КОНВЕРТА -->
+                <details class="settings-panel" id="detailEnvelopeSettings">
+                    <summary class="settings-summary">⚙️ Настройки конверта</summary>
+                    <div class="settings-panel-body">
+                        <div class="form-group form-row">
+                            <div class="form-group-half">
+                                <label class="form-label">Округление</label>
+                                <select class="form-select" id="detailEnvelopeRoundDirection">
+                                    <option value="standard">Стандартное</option>
+                                    <option value="up">Всегда вверх</option>
+                                    <option value="down">Всегда вниз</option>
+                                </select>
+                            </div>
+                            <div class="form-group-half">
+                                <label class="form-label">Шаг</label>
+                                <select class="form-select" id="detailEnvelopeRoundStep">
+                                    <option value="100">100 ₽</option>
+                                    <option value="50">50 ₽</option>
+                                    <option value="500">500 ₽</option>
+                                    <option value="1000">1 000 ₽</option>
+                                    <option value="5000">5 000 ₽</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group-half">
-                            <label class="form-label">Шаг</label>
-                            <select class="form-select" id="detailEnvelopeRoundStep">
-                                <option value="100">100 ₽</option>
-                                <option value="50">50 ₽</option>
-                                <option value="500">500 ₽</option>
-                                <option value="1000">1 000 ₽</option>
-                                <option value="5000">5 000 ₽</option>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Цель накопления (необязательно)</label>
+                            <input type="number" class="form-input" id="detailEnvelopeGoal" min="0" placeholder="Например: 50000">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Приоритетный номинал</label>
+                            <select class="form-select" id="detailPriorityDenom">
+                                <option value="">Любой номинал</option>
                             </select>
+                            <div class="form-hint">Алгоритм будет стараться класть сюда купюры этого номинала</div>
+                        </div>
+
+                        <div class="form-group" id="detailPriorityEnvelopeContainer" style="display: none;">
+                            <label class="form-label">Приоритетный конверт</label>
+                            <button class="btn-priority-toggle" id="detailPriorityEnvelopeBtn" onclick="toggleDetailUserPriorityEnvelope()">Сделать приоритетным</button>
+                            <div class="form-hint">Этот конверт будет наполняться первым при распределении</div>
                         </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Цель накопления (необязательно)</label>
-                        <input type="number" class="form-input" id="detailEnvelopeGoal" min="0" placeholder="Например: 50000">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Приоритетный номинал</label>
-                        <select class="form-select" id="detailPriorityDenom">
-                            <option value="">Любой номинал</option>
-                        </select>
-                        <div class="form-hint">Алгоритм будет стараться класть сюда купюры этого номинала</div>
-                    </div>
-
-                    <div class="form-group" id="detailPriorityEnvelopeContainer" style="display: none;">
-                        <label class="form-label">Приоритетный конверт</label>
-                        <button class="btn-priority-toggle" id="detailPriorityEnvelopeBtn" onclick="toggleDetailUserPriorityEnvelope()">Сделать приоритетным</button>
-                        <div class="form-hint">Этот конверт будет наполняться первым при распределении</div>
-                    </div>
-                </div>
+                </details>
 
                 <!-- СЕКЦИЯ 3: ДЕЙСТВИЯ С КУПЮРАМИ -->
                 <div class="modal-section">
@@ -770,9 +761,9 @@
                     
                     <div class="action-grid">
                         <button class="action-button" onclick="openBillEditor()">✏️ Редактировать состав купюр</button>
-                        <button class="action-button" onclick="openPutMoney()">➕ Положить из банка</button>
-                        <button class="action-button danger" onclick="openTakeMoney()">➖ Взять (потратить)</button>
                         <button class="action-button" onclick="openEnvelopeTransfer()">🔄 Переложить в другой конверт</button>
+                        <button class="action-button danger" onclick="openTakeMoney()">➖ Взять (потратить)</button>
+                        <button class="action-button success" onclick="openPutMoney()">➕ Пополнить</button>
                         <button class="action-button action-button-full" onclick="openEnvelopeHistory()">📜 История этого конверта</button>
                     </div>
                 </div>
@@ -824,7 +815,7 @@
             </div>
             <div class="modal-footer-equal">
                 <button class="btn btn-secondary" onclick="closeModal('moneyActionModal')">Отмена</button>
-                <button class="btn btn-primary" onclick="confirmMoneyAction()">Подтвердить</button>
+                <button class="btn btn-primary" id="moneyActionConfirmBtn" onclick="confirmMoneyAction()">Положить</button>
             </div>
         </div>
     </div>
