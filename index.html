@@ -6,35 +6,35 @@
     <title>Семейный бюджет</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20261119">
 </head>
 <body>
     <div class="app">
         <!-- SIDEBAR (десктоп) -->
         <nav class="sidebar" id="sidebar">
             <div class="sidebar-logo">
-                <div class="sidebar-logo-icon">💰</div>
+                <div class="sidebar-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M16 8.5c-.8-1-2-1.5-4-1.5-2.2 0-3.5 1-3.5 2.5 0 3.5 7.5 1.5 7.5 5 0 1.5-1.3 2.5-4 2.5-1.9 0-3.4-.6-4.5-1.7M12 5v14"/></svg></div>
                 <div class="sidebar-logo-text">Семейный бюджет</div>
             </div>
             
             <button class="sidebar-btn active" data-screen="home" onclick="switchScreen('home')">
-                <span class="sidebar-btn-icon">🏠</span>
+                <span class="sidebar-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11.5 12 4l9 7.5M5.5 10.5V20h13v-9.5M9.5 20v-6h5v6"/></svg></span>
                 <span class="sidebar-btn-text">Главная</span>
             </button>
             <button class="sidebar-btn" data-screen="stats" onclick="switchScreen('stats')">
-                <span class="sidebar-btn-icon">📊</span>
+                <span class="sidebar-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
                 <span class="sidebar-btn-text">Статистика</span>
             </button>
             <button class="sidebar-btn" data-screen="history" onclick="switchScreen('history')">
-                <span class="sidebar-btn-icon">📜</span>
+                <span class="sidebar-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18H6zM9 7h6M9 11h6M9 15h4"/></svg></span>
                 <span class="sidebar-btn-text">История</span>
             </button>
             <button class="sidebar-btn" data-screen="settings" onclick="switchScreen('settings')">
-                <span class="sidebar-btn-icon">⚙️</span>
+                <span class="sidebar-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
                 <span class="sidebar-btn-text">Настройки</span>
             </button>
             <button class="sidebar-btn" data-screen="users" onclick="switchScreen('users')">
-                <span class="sidebar-btn-icon">👥</span>
+                <span class="sidebar-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.5-7 6-7s6 3 6 7M14 14c3-1 6 1 7 4"/></svg></span>
                 <span class="sidebar-btn-text">Участники</span>
             </button>
 
@@ -52,16 +52,16 @@
             <div class="screen active" id="screen-start">
                 <div class="start-container">
                     <div class="start-card">
-                        <div class="start-icon">💰</div>
+                        <div class="start-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M16 8.5c-.8-1-2-1.5-4-1.5-2.2 0-3.5 1-3.5 2.5 0 3.5 7.5 1.5 7.5 5 0 1.5-1.3 2.5-4 2.5-1.9 0-3.4-.6-4.5-1.7M12 5v14"/></svg></div>
                         <h1 class="start-title">Семейный бюджет</h1>
                         <p class="start-subtitle">Синхронизация между устройствами</p>
                         
                         <div class="start-buttons">
                             <button class="btn btn-primary btn-full btn-large" onclick="showCreateFamilyScreen()">
-                                ➕ Создать новую семью
+                                Создать новую семью
                             </button>
                             <button class="btn btn-secondary btn-full btn-large" onclick="showJoinFamilyScreen()">
-                                🔑 У меня уже есть код
+                                У меня уже есть код
                             </button>
                         </div>
                     </div>
@@ -72,7 +72,7 @@
             <div class="screen" id="screen-create-family">
                 <div class="start-container">
                     <div class="start-card">
-                        <div class="start-icon">🏠</div>
+                        <div class="start-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5M5.5 10.5V20h13v-9.5M9.5 20v-6h5v6"/></svg></div>
                         <h1 class="start-title">Создание семьи</h1>
                         <p class="start-subtitle">Введите название для генерации кода</p>
                         
@@ -97,18 +97,18 @@
             <div class="screen" id="screen-family-created">
                 <div class="start-container">
                     <div class="start-card">
-                        <div class="start-icon">✅</div>
+                        <div class="start-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></div>
                         <h1 class="start-title">Семья создана!</h1>
                         <p class="start-subtitle">Сохраните этот код и отправьте участникам</p>
                         
                         <div class="family-code-display">
                             <div class="family-code" id="familyCodeDisplay">ivanov-x7k9m2</div>
-                            <button class="btn btn-secondary" onclick="copyFamilyCode()">📋 Скопировать</button>
+                            <button class="btn btn-secondary" onclick="copyFamilyCode()">Скопировать</button>
                         </div>
                         
                         <div class="family-code-info">
-                            <p>📱 Отправьте этот код второму участнику</p>
-                            <p>💾 Код автоматически сохранён на этом устройстве</p>
+                            <p>Отправьте этот код второму участнику</p>
+                            <p>Код автоматически сохранён на этом устройстве</p>
                         </div>
                         
                         <button class="btn btn-primary btn-full btn-large" onclick="enterFamily()" style="margin-top: 16px;">
@@ -122,7 +122,7 @@
             <div class="screen" id="screen-join-family">
                 <div class="start-container">
                     <div class="start-card">
-                        <div class="start-icon">🔑</div>
+                        <div class="start-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M16 7l2 2M18 5l2 2"/></svg></div>
                         <h1 class="start-title">Вход в семью</h1>
                         <p class="start-subtitle">Введите код, который вам отправили</p>
                         
@@ -147,7 +147,7 @@
             <div class="screen" id="screen-select-user">
                 <div class="start-container">
                     <div class="start-card">
-                        <div class="start-icon">👋</div>
+                        <div class="start-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></div>
                         <h1 class="start-title">Добро пожаловать!</h1>
                         <p class="start-subtitle">Выберите пользователя или создайте нового</p>
                         
@@ -174,7 +174,7 @@
             <div class="screen" id="screen-onboarding">
                 <div class="onboarding-container">
                     <div class="onboarding-card">
-                        <div class="onboarding-icon">👤</div>
+                        <div class="onboarding-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></div>
                         <h1 class="onboarding-title">Новый пользователь</h1>
                         <p class="onboarding-subtitle">Введите ваше имя</p>
                         
@@ -222,7 +222,7 @@
 
                     <div class="envelopes-section">
                         <div class="section-title">
-                            <span>📁</span> Конверты <span id="currentUserLabel" style="color: var(--text-secondary); font-size: 13px; font-weight: 500;">(Активен: Я)</span>
+                            Конверты <span id="currentUserLabel" style="color: var(--text-secondary); font-size: 13px; font-weight: 500;">(Активен: Я)</span>
                         </div>
                         <div id="envelopesContainer">
                             <div class="empty-state" id="emptyState">
@@ -235,18 +235,18 @@
                         </div>
                     </div>
                 </div>
-                <button class="fab" id="fabDistribution" onclick="openDistribution()">💰 Разложить</button>
+                <button class="fab" id="fabDistribution" onclick="openDistribution()">Разложить</button>
             </div>
 
             <!-- ===== ЭКРАН: СТАТИСТИКА ===== -->
             <div class="screen" id="screen-stats">
                 <div class="screen-header">
-                    <h2>📊 Статистика</h2>
+                    <h2>Статистика</h2>
                 </div>
                 <div class="screen-content">
                     <div class="stats-filters">
                         <div class="filter-section">
-                            <div class="filter-label">📅 Период</div>
+                            <div class="filter-label">Период</div>
                             <div class="time-filter" id="timeFilter">
                                 <button class="time-filter-btn active" onclick="setTimeFilter('all', this)">Всё</button>
                                 <button class="time-filter-btn" onclick="setTimeFilter('today', this)">Сегодня</button>
@@ -268,14 +268,14 @@
                         </div>
 
                         <div class="filter-section">
-                            <div class="filter-label">👥 Пользователь</div>
+                            <div class="filter-label">Пользователь</div>
                             <div class="user-filter" id="userFilter">
                                 <!-- JS заполнит динамически -->
                             </div>
                         </div>
 
                         <div class="filter-section">
-                            <div class="filter-label">📁 Тип конверта</div>
+                            <div class="filter-label">Тип конверта</div>
                             <div class="envelope-type-filter" id="envelopeTypeFilter">
                                 <!-- JS заполнит динамически -->
                             </div>
@@ -283,7 +283,7 @@
 
 
                         <div class="filter-section">
-                            <div class="filter-label">📁 Конверты</div>
+                            <div class="filter-label">Конверты</div>
                             <div class="envelope-multiselect">
                                 <button class="multiselect-toggle" onclick="toggleEnvelopeMultiselect()">
                                     <span id="envelopeFilterLabel">Все конверты</span>
@@ -345,9 +345,15 @@
                     <div class="chart-section">
                         <div class="chart-header">
                             <div class="chart-title"> Динамика баланса</div>
-                            <select class="form-select" id="balanceChartEnvelope" onchange="renderBalanceChart()" style="width: auto; min-width: 200px;">
-                                <option value="all">Общий баланс</option>
-                            </select>
+                            <div class="balance-envelope-select" id="balanceEnvelopeSelect">
+                                <button class="balance-envelope-toggle" id="balanceEnvelopeToggle" type="button" onclick="toggleBalanceEnvelopeSelect()" aria-expanded="false">
+                                    <span class="balance-envelope-toggle-icon" id="balanceEnvelopeToggleIcon"></span>
+                                    <span id="balanceEnvelopeToggleLabel">Общий баланс</span>
+                                    <span class="balance-envelope-arrow">⌄</span>
+                                </button>
+                                <div class="balance-envelope-dropdown" id="balanceEnvelopeDropdown"></div>
+                                <input type="hidden" id="balanceChartEnvelope" value="all">
+                            </div>
                         </div>
                         <div class="stats-chart-container">
                             <canvas id="balanceChart"></canvas>
@@ -378,7 +384,7 @@
                 <div class="screen-content">
                     <div class="stats-filters">
                         <div class="filter-section">
-                            <div class="filter-label">📅 Период</div>
+                            <div class="filter-label">Период</div>
                             <div class="time-filter" id="timeFilterHistory">
                                 <button class="time-filter-btn active" onclick="setTimeFilterHistory('all', this)">Всё</button>
                                 <button class="time-filter-btn" onclick="setTimeFilterHistory('today', this)">Сегодня</button>
@@ -399,19 +405,19 @@
                             </div>
                         </div>
                         <div class="filter-section">
-                            <div class="filter-label">👥 Пользователь</div>
+                            <div class="filter-label">Пользователь</div>
                             <div class="user-filter" id="userFilterHistory">
                                 <!-- JS заполнит динамически -->
                             </div>
                         </div>
                         <div class="filter-section">
-                            <div class="filter-label">🏷️ Тип операции</div>
+                            <div class="filter-label">Тип операции</div>
                             <div class="operation-type-filter">
                                 <button class="type-filter-btn active" data-type="all" onclick="setOperationTypeFilter('all', this)">Все</button>
-                                <button class="type-filter-btn" data-type="put" onclick="setOperationTypeFilter('put', this)">➕ Пополнения</button>
-                                <button class="type-filter-btn" data-type="take" onclick="setOperationTypeFilter('take', this)">➖ Траты</button>
-                                <button class="type-filter-btn" data-type="transfer" onclick="setOperationTypeFilter('transfer', this)">🔄 Переводы</button>
-                                <button class="type-filter-btn" data-type="manual" onclick="setOperationTypeFilter('manual', this)">🔧 Технические</button>
+                                <button class="type-filter-btn" data-type="put" onclick="setOperationTypeFilter('put', this)">Пополнения</button>
+                                <button class="type-filter-btn" data-type="take" onclick="setOperationTypeFilter('take', this)">Траты</button>
+                                <button class="type-filter-btn" data-type="transfer" onclick="setOperationTypeFilter('transfer', this)">Переводы</button>
+                                <button class="type-filter-btn" data-type="manual" onclick="setOperationTypeFilter('manual', this)">Технические</button>
                             </div>
                         </div>
 
@@ -437,7 +443,7 @@
                     </div>
 
                     <div class="history-search">
-                        <input type="text" class="form-input" id="historySearchInput" placeholder="🔍 Поиск по комментариям и названиям..." oninput="renderHistoryMainList()">
+                        <input type="text" class="form-input" id="historySearchInput" placeholder="Поиск по комментариям и названиям..." oninput="renderHistoryMainList()">
                     </div>
 
                     <div class="history-list-main" id="historyMainList"></div>
@@ -447,57 +453,59 @@
             <!-- ===== ЭКРАН: НАСТРОЙКИ ===== -->
             <div class="screen" id="screen-settings">
                 <div class="screen-header">
-                    <h2>⚙️ Настройки</h2>
+                    <h2>Настройки</h2>
                 </div>
                 <div class="screen-content">
                     <div class="settings-page-section">
-                        <h3>👨‍👩‍👧 Ваша семья</h3>
+                        <h3>Ваша семья</h3>
                         <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
                             Код семьи: <strong id="settingsFamilyCode">-</strong>
                         </p>
                         <button class="btn btn-secondary btn-full" onclick="leaveFamily()">
-                            🚪 Выйти из семьи
+                            Выйти из семьи
                         </button>
                     </div>
 
                     <div class="settings-page-section">
-                        <h3>💾 Резервное копирование</h3>
+                        <h3>Резервное копирование</h3>
                         <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">Сохраните данные в файл или загрузите из файла</p>
                         <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                            <button class="btn btn-primary" onclick="exportData()">📥 Скачать JSON</button>
-                            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📤 Загрузить JSON</button>
+                            <button class="btn btn-primary" onclick="exportData()">Скачать JSON</button>
+                            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Загрузить JSON</button>
                             <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
                         </div>
                     </div>
 
-                    <div class="settings-page-section">
-                        <h3>🎓 Обучение и подсказки</h3>
-                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">Нажмите на кнопку, чтобы перейти к нужному разделу и запустить обучение.</p>
-                        
-                        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-                            <button class="btn btn-secondary btn-full" style="justify-content: flex-start;" onclick="startInteractiveTour('main')">🏠 Как пользоваться главным экраном?</button>
-                            <button class="btn btn-secondary btn-full" style="justify-content: flex-start;" onclick="startInteractiveTour('stats')">📊 Как пользоваться статистикой?</button>
-                            <button class="btn btn-secondary btn-full" style="justify-content: flex-start;" onclick="startInteractiveTour('history')">📜 Как пользоваться историей?</button>
-                            <button class="btn btn-secondary btn-full" style="justify-content: flex-start;" onclick="startInteractiveTour('settings')">⚙️ Как пользоваться настройками?</button>
-                            <button class="btn btn-secondary btn-full" style="justify-content: flex-start;" onclick="startInteractiveTour('users')">👥 Как управлять участниками?</button>
-                        </div>
+                    <details class="settings-page-section settings-disclosure">
+                        <summary>Обучение и подсказки</summary>
+                        <div class="settings-disclosure-body">
+                            <p>Нажмите на кнопку, чтобы перейти к нужному разделу и запустить обучение.</p>
+                            
+                            <div class="learning-button-list">
+                                <button class="btn btn-secondary btn-full" onclick="startInteractiveTour('main')">Как пользоваться главным экраном?</button>
+                                <button class="btn btn-secondary btn-full" onclick="startInteractiveTour('stats')">Как пользоваться статистикой?</button>
+                                <button class="btn btn-secondary btn-full" onclick="startInteractiveTour('history')">Как пользоваться историей?</button>
+                                <button class="btn btn-secondary btn-full" onclick="startInteractiveTour('settings')">Как пользоваться настройками?</button>
+                                <button class="btn btn-secondary btn-full" onclick="startInteractiveTour('users')">Как управлять участниками?</button>
+                            </div>
 
-                        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-                            <button class="btn btn-primary btn-full" style="justify-content: flex-start;" onclick="startInteractiveTour('distribute')">💰 Как разложить деньги?</button>
-                            <button class="btn btn-primary btn-full" style="justify-content: flex-start;" onclick="startInteractiveTour('create')">📁 Как создать конверт?</button>
-                            <button class="btn btn-primary btn-full" style="justify-content: flex-start;" onclick="startInteractiveTour('edit')">✏️ Как редактировать конверт?</button>
-                        </div>
+                            <div class="learning-button-list learning-button-list-primary">
+                                <button class="btn btn-primary btn-full" onclick="startInteractiveTour('distribute')">Как разложить деньги?</button>
+                                <button class="btn btn-primary btn-full" onclick="startInteractiveTour('create')">Как создать конверт?</button>
+                                <button class="btn btn-primary btn-full" onclick="startInteractiveTour('edit')">Как редактировать конверт?</button>
+                            </div>
 
-                        <button class="btn btn-danger btn-full" onclick="resetAllLearning()">🔄 Сбросить все обучение</button>
-                    </div>
+                            <button class="btn btn-danger btn-full" onclick="resetAllLearning()">Сбросить все обучение</button>
+                        </div>
+                    </details>
 
 
 
 
                     <div class="settings-page-section danger-zone">
-                        <h3>⚠️ Опасная зона</h3>
+                        <h3>Опасная зона</h3>
                         <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 12px;">Все данные будут безвозвратно удалены. Это действие нельзя отменить.</p>
-                        <button class="btn btn-danger btn-full" onclick="clearAllData()">🗑️ Стереть все данные</button>
+                        <button class="btn btn-danger btn-full" onclick="clearAllData()">Стереть все данные</button>
                     </div>
 
                     <div id="settingsMessage" class="success-message"></div>
@@ -507,7 +515,7 @@
             <!-- ===== ЭКРАН: УЧАСТНИКИ ===== -->
             <div class="screen" id="screen-users">
                 <div class="screen-header">
-                    <h2>👥 Участники</h2>
+                    <h2>Участники</h2>
                 </div>
                 <div class="screen-content">
                     <div class="users-list" id="usersList">
@@ -515,7 +523,7 @@
                     </div>
                     
                     <button class="btn btn-primary btn-full" onclick="openAddUserModal()" style="margin-top: 16px;">
-                        ➕ Добавить участника
+                        Добавить участника
                     </button>
 
                     <div id="usersMessage" class="success-message"></div>
@@ -526,23 +534,23 @@
         <!-- TAB BAR (мобильный) -->
         <nav class="tab-bar">
             <button class="tab-btn active" data-screen="home" onclick="switchScreen('home')">
-                <span class="tab-btn-icon">🏠</span>
+                <span class="tab-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11.5 12 4l9 7.5M5.5 10.5V20h13v-9.5M9.5 20v-6h5v6"/></svg></span>
                 <span class="tab-btn-text">Главная</span>
             </button>
             <button class="tab-btn" data-screen="stats" onclick="switchScreen('stats')">
-                <span class="tab-btn-icon">📊</span>
+                <span class="tab-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
                 <span class="tab-btn-text">Статистика</span>
             </button>
             <button class="tab-btn" data-screen="history" onclick="switchScreen('history')">
-                <span class="tab-btn-icon">📜</span>
+                <span class="tab-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18H6zM9 7h6M9 11h6M9 15h4"/></svg></span>
                 <span class="tab-btn-text">История</span>
             </button>
             <button class="tab-btn" data-screen="settings" onclick="switchScreen('settings')">
-                <span class="tab-btn-icon">️⚙️</span>
+                <span class="tab-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
                 <span class="tab-btn-text">Настройки</span>
             </button>
             <button class="tab-btn" data-screen="users" onclick="switchScreen('users')">
-                <span class="tab-btn-icon">👥</span>
+                <span class="tab-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.5-7 6-7s6 3 6 7M14 14c3-1 6 1 7 4"/></svg></span>
                 <span class="tab-btn-text">Участники</span>
             </button>
         </nav>
@@ -552,7 +560,7 @@
     <div class="modal-overlay" id="userModal">
         <div class="modal">
             <div class="modal-header">
-                <div class="modal-title" id="userModalTitle">👤 Добавить участника</div>
+                <div class="modal-title" id="userModalTitle">Добавить участника</div>
                 <button class="modal-close" onclick="closeModal('userModal')">&times;</button>
             </div>
             <div class="modal-body">
@@ -581,14 +589,14 @@
     <div class="modal-overlay" id="envelopeModal">
         <div class="modal">
             <div class="modal-header">
-                <div class="modal-title" id="envelopeModalTitle">📁 Создать конверт</div>
+                <div class="modal-title" id="envelopeModalTitle">Создать конверт</div>
                 <button class="modal-close" onclick="closeModal('envelopeModal')">&times;</button>
             </div>
             <div class="modal-body">
                 
                 <!-- СЕКЦИЯ 1: ОСНОВНАЯ ИНФОРМАЦИЯ -->
                 <div class="modal-section">
-                    <div class="modal-section-title">📁 Основная информация</div>
+                    <div class="modal-section-title">Основная информация</div>
                     
                     <div class="form-group">
                         <label class="form-label">Иконка</label>
@@ -603,8 +611,8 @@
                     <div class="form-group">
                         <label class="form-label">Тип конверта</label>
                         <div class="envelope-type-toggle">
-                            <button class="type-toggle-btn active" data-type="personal" onclick="setEnvelopeType('personal')">👤 Личный</button>
-                            <button class="type-toggle-btn" data-type="shared" onclick="setEnvelopeType('shared')">👥 Общий</button>
+                            <button class="type-toggle-btn active" data-type="personal" onclick="setEnvelopeType('personal')">Личный</button>
+                            <button class="type-toggle-btn" data-type="shared" onclick="setEnvelopeType('shared')">Общий</button>
                         </div>
                     </div>
 
@@ -615,7 +623,7 @@
 
                 <!-- СЕКЦИЯ 2: НАСТРОЙКИ РАСПРЕДЕЛЕНИЯ -->
                 <div class="modal-section">
-                    <div class="modal-section-title">⚙️ Настройки распределения</div>
+                    <div class="modal-section-title">Настройки распределения</div>
                     
                     <div class="form-group form-row">
                         <div class="form-group-half">
@@ -679,7 +687,7 @@
     <div class="modal-overlay" id="envelopeDetailModal">
         <div class="modal">
             <div class="modal-header">
-                <div class="modal-title" id="detailEnvelopeTitle">📁 Конверт</div>
+                <div class="modal-title" id="detailEnvelopeTitle">Конверт</div>
                 <button class="modal-close" onclick="closeModal('envelopeDetailModal')">&times;</button>
             </div>
             <div class="modal-body">
@@ -711,7 +719,7 @@
 
                 <!-- СЕКЦИЯ 2: НАСТРОЙКИ КОНВЕРТА -->
                 <details class="settings-panel" id="detailEnvelopeSettings">
-                    <summary class="settings-summary">⚙️ Настройки конверта</summary>
+                    <summary class="settings-summary">Настройки конверта</summary>
                     <div class="settings-panel-body">
                         <div class="form-group form-row">
                             <div class="form-group-half">
@@ -757,28 +765,28 @@
 
                 <!-- СЕКЦИЯ 3: ДЕЙСТВИЯ С КУПЮРАМИ -->
                 <div class="modal-section">
-                    <div class="modal-section-title">🛠️ Действия с купюрами</div>
+                    <div class="modal-section-title">Действия с купюрами</div>
                     
                     <div class="action-grid">
-                        <button class="action-button" onclick="openBillEditor()">✏️ Редактировать состав купюр</button>
-                        <button class="action-button" onclick="openEnvelopeTransfer()">🔄 Переложить в другой конверт</button>
-                        <button class="action-button danger" onclick="openTakeMoney()">➖ Взять (потратить)</button>
-                        <button class="action-button success" onclick="openPutMoney()">➕ Пополнить</button>
-                        <button class="action-button action-button-full" onclick="openEnvelopeHistory()">📜 История этого конверта</button>
+                        <button class="action-button" onclick="openBillEditor()">Редактировать состав купюр</button>
+                        <button class="action-button" onclick="openEnvelopeTransfer()">Переложить в другой конверт</button>
+                        <button class="action-button danger" onclick="openTakeMoney()">Взять (потратить)</button>
+                        <button class="action-button success" onclick="openPutMoney()">Пополнить</button>
+                        <button class="action-button action-button-full" onclick="openEnvelopeHistory()">История этого конверта</button>
                     </div>
                 </div>
 
                 <!-- СЕКЦИЯ 4: ТЕКУЩИЙ СОСТАВ -->
                 <div class="modal-section">
-                    <div class="modal-section-title">💰 Текущий состав</div>
+                    <div class="modal-section-title">Текущий состав</div>
                     <div id="detailEnvelopeBillsSummary" class="bills-summary"></div>
                 </div>
 
                 <div id="detailEnvelopeError" class="error-message"></div>
             </div>
             <div class="modal-footer" style="justify-content: space-between;">
-                <button class="btn btn-danger" onclick="deleteCurrentEnvelope()">🗑️ Удалить конверт</button>
-                <div style="display: flex; gap: 10px;">
+                <button class="btn btn-danger envelope-delete-btn" onclick="deleteCurrentEnvelope()">Удалить</button>
+                <div class="envelope-detail-footer-actions">
                     <button class="btn btn-secondary" onclick="closeModal('envelopeDetailModal')">Закрыть</button>
                     <button class="btn btn-primary" onclick="saveEnvelopeDetail()">Сохранить</button>
                 </div>
@@ -806,7 +814,7 @@
     <!-- МОДАЛКА: ДЕЙСТВИЯ С ДЕНЬГАМИ -->
     <div class="modal-overlay" id="moneyActionModal">
         <div class="modal">
-            <div class="modal-header"><div class="modal-title" id="moneyActionTitle">➕ Положить деньги</div><button class="modal-close" onclick="closeModal('moneyActionModal')">&times;</button></div>
+            <div class="modal-header"><div class="modal-title" id="moneyActionTitle">Положить деньги</div><button class="modal-close" onclick="closeModal('moneyActionModal')">&times;</button></div>
             <div class="modal-body">
                 <div id="moneyActionBills"></div>
                 <div class="success-message visible" id="moneyActionTotal">Выбрано: 0 ₽</div>
@@ -823,7 +831,7 @@
     <!-- МОДАЛКА: ПЕРЕЛОЖИТЬ МЕЖДУ КОНВЕРТАМИ -->
     <div class="modal-overlay" id="envelopeTransferModal">
         <div class="modal">
-            <div class="modal-header"><div class="modal-title">🔄 Переложить купюры</div><button class="modal-close" onclick="closeModal('envelopeTransferModal')">&times;</button></div>
+            <div class="modal-header"><div class="modal-title">Переложить купюры</div><button class="modal-close" onclick="closeModal('envelopeTransferModal')">&times;</button></div>
             <div class="modal-body">
                 <div class="form-group"><label class="form-label">Выберите купюры</label><div id="envelopeTransferBills"></div></div>
                 <div class="form-group"><label class="form-label">В какой конверт</label><select class="form-select" id="envelopeTransferTarget"><option value="">Выберите конверт</option></select></div>
@@ -841,7 +849,7 @@
     <!-- МОДАЛКА: РАСПРЕДЕЛЕНИЕ -->
     <div class="modal-overlay" id="distributionModal">
         <div class="modal">
-            <div class="modal-header"><div class="modal-title">💰 Распределение (<span id="distUserName">Я</span>)</div><button class="modal-close" onclick="closeModal('distributionModal')">&times;</button></div>
+            <div class="modal-header"><div class="modal-title">Распределение (<span id="distUserName">Я</span>)</div><button class="modal-close" onclick="closeModal('distributionModal')">&times;</button></div>
             <div class="modal-body">
                 <div id="distributionStep1">
                     <div class="form-group"><label class="form-label">Общая сумма для распределения (₽)</label><input type="number" class="form-input" id="distributionTotalAmount" min="0" placeholder="Введите сумму"></div>
@@ -851,7 +859,7 @@
                     <div id="distributionSumCheck" class="success-message"></div>
                 </div>
                 <div id="distributionStep2" class="hidden">
-                    <div class="success-message visible">✓ Сумма проверена! Распределение:</div>
+                    <div class="success-message visible">Сумма проверена! Распределение:</div>
                     <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">Нажмите на купюру, чтобы переложить её</div>
                     <div id="distributionResult"></div>
                 </div>
@@ -870,7 +878,7 @@
     <!-- МОДАЛКА: ПЕРЕЛОЖИТЬ В РЕЖИМЕ РАСПРЕДЕЛЕНИЯ -->
     <div class="modal-overlay" id="transferModal">
         <div class="modal">
-            <div class="modal-header"><div class="modal-title">🔄 Переложить купюры</div><button class="modal-close" onclick="closeModal('transferModal')">&times;</button></div>
+            <div class="modal-header"><div class="modal-title">Переложить купюры</div><button class="modal-close" onclick="closeModal('transferModal')">&times;</button></div>
             <div class="modal-body">
                 <div class="form-group"><label class="form-label">Купюры для перемещения</label><div id="transferBillInfo"></div></div>
                 <div class="form-group"><label class="form-label">В какой конверт</label><select class="form-select" id="transferTargetEnvelope"></select></div>
@@ -887,7 +895,7 @@
     <!-- МОДАЛКА: ИСТОРИЯ КОНВЕРТА -->
     <div class="modal-overlay" id="envelopeHistoryModal">
         <div class="modal">
-            <div class="modal-header"><div class="modal-title" id="envelopeHistoryTitle">📜 История конверта</div><button class="modal-close" onclick="closeModal('envelopeHistoryModal')">&times;</button></div>
+            <div class="modal-header"><div class="modal-title" id="envelopeHistoryTitle">История конверта</div><button class="modal-close" onclick="closeModal('envelopeHistoryModal')">&times;</button></div>
             <div class="modal-body"><div class="history-list" id="envelopeHistoryList"></div></div>
             <div class="modal-footer"><button class="btn btn-secondary btn-full" onclick="closeModal('envelopeHistoryModal')">Закрыть</button></div>
         </div>
@@ -899,7 +907,7 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="script.js"></script>
+    <script src="script.js?v=20261119"></script>
 
         <!-- ОВЕРЛЕЙ: МАСТЕР ПЕРВОГО ВХОДА -->
     <div id="onboardingMasterOverlay" class="onboarding-overlay">
