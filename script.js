@@ -1520,10 +1520,10 @@ function renderEnvelopes() {
         var ownersHtml = '';
         if (env.type === 'shared' && env.owners) {
             var ownerNames = env.owners.map(function(oid) { var u = getUserById(oid); return u ? getIconSVG(u.emoji, 14) + ' ' + escapeHtml(u.name) : oid; }).join(', ');
-            ownersHtml = '<div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">' + getIconSVG('👥', 14) + ' ' + ownerNames + '</div>';
+            ownersHtml = '<div class="envelope-shared-owners">' + getIconSVG('👥', 14) + ' ' + ownerNames + '</div>';
         }
         // ИСПРАВЛЕНО: использованы обратные кавычки ` для интерполяции ${priorityBadge}
-        card.innerHTML = `${priorityBadge}<div class="envelope-card-header"><div class="envelope-icon" style="background: ` + ownerColor + `20; color:` + ownerColor + `;">` + getIconSVG(env.icon || '📁', 28) + `</div><div class="envelope-name">` + escapeHtml(env.name) + `<span class="owner-badge" style="background: ` + ownerColor + `;">` + getEnvelopeOwnerLabel(env) + `</span>` + ownersHtml + `</div></div><div class="envelope-amount">` + formatMoney(total) + `</div>` + (pctText ? `<div class="envelope-percent">` + pctText + `</div>` : '') + `<div class="envelope-bills">` + renderBillsList(env.bills) + `</div>` + goalHtml;
+        card.innerHTML = `${priorityBadge}<div class="envelope-card-header"><div class="envelope-icon" style="background: ` + ownerColor + `20; color:` + ownerColor + `;">` + getIconSVG(env.icon || '📁', 28) + `</div><div class="envelope-name"><div class="envelope-title-row"><span>` + escapeHtml(env.name) + `</span><span class="owner-badge" style="background: ` + ownerColor + `;">` + getEnvelopeOwnerLabel(env) + `</span></div>` + ownersHtml + `</div></div><div class="envelope-amount">` + formatMoney(total) + `</div>` + (pctText ? `<div class="envelope-percent">` + pctText + `</div>` : '') + `<div class="envelope-bills">` + renderBillsList(env.bills) + `</div>` + goalHtml;
         grid.appendChild(card);
     });
 }
