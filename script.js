@@ -17,6 +17,85 @@ var ENVELOPE_ICONS = ['🏠', '🍔', '🍎', '🎂', '⚽️', '🚎', '💊', 
 var USER_EMOJIS = ['👤', '💁‍♀️', '👨', '👦', '👧', '👶', '🧙‍♀️', '👵', '🧑', '🧔', '👱', '🧓', '👮', '🧛‍♂️', '👸', '🫅', '🕵️', '👨‍👩‍👧', '👩‍💼', '👨‍🍳', '👩‍🍳', '👨‍', '👩‍🎓', '👨‍💻', '‍💻', '🧑‍💻'];
 var USER_COLORS = ['#3b82f6', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#14b8a6', '#f97316', '#6b7280', '#6366f1', '#e11d48', '#0ea5e9'];
 
+function iconSvg(content) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + content + '</svg>';
+}
+
+var ICON_SVGS = {
+    '🏠': iconSvg('<path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/>'),
+    '🍔': iconSvg('<path d="M4 11c.4-4 3.5-7 8-7s7.6 3 8 7H4Z"/><path d="M4 14h16M4 14c0 3 2.2 5 5.5 5h5c3.3 0 5.5-2 5.5-5"/><path d="M8 8.5h.01M12 8h.01M16 8.5h.01"/>'),
+    '🍎': iconSvg('<path d="M12 8c-3-3-7-1-7 4 0 5 3 8 7 8 4 0 7-3 7-8 0-5-4-7-7-4Z"/><path d="M12 8c.5-3 2-4 4-4"/><path d="M12 5c-1-2-3-2-4-1"/>'),
+    '🎂': iconSvg('<path d="M4 11h16v9H4z"/><path d="M4 15h16"/><path d="M8 11V8M12 11V7M16 11V8"/><path d="M8 5.5v-2M12 4.5v-2M16 5.5v-2"/>'),
+    '⚽️': iconSvg('<circle cx="12" cy="12" r="9"/><path d="m12 7 3 2.2-1.2 3.6H10l-1.2-3.6L12 7Z"/><path d="m12 3v4M21 12l-4.5-1M16.5 19l-2.7-6.2M7.5 19l2.7-6.2M3 12l4.5-1"/>'),
+    '🚎': iconSvg('<rect x="4" y="3" width="16" height="16" rx="3"/><path d="M4 12h16M8 19v2M16 19v2"/><circle cx="8" cy="15.5" r="1"/><circle cx="16" cy="15.5" r="1"/>'),
+    '💊': iconSvg('<path d="M8 18 18 8a4 4 0 0 0-6-6L2 12a4 4 0 0 0 6 6Z"/><path d="m8 7 9 9"/>'),
+    '🎁': iconSvg('<rect x="3" y="9" width="18" height="11" rx="2"/><path d="M12 9v11M3 13h18"/><path d="M12 9H7.5A2.5 2.5 0 1 1 12 6.5V9Zm0 0h4.5A2.5 2.5 0 1 0 12 6.5V9Z"/>'),
+    '📚': iconSvg('<path d="M5 4h11a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2V4Z"/><path d="M7 16h11M8 4v12"/>'),
+    '🎮': iconSvg('<path d="M7 8h10a4 4 0 0 1 3.7 5.5l-1.2 3A2 2 0 0 1 16 17l-2-2h-4l-2 2a2 2 0 0 1-3.5-.5l-1.2-3A4 4 0 0 1 7 8Z"/><path d="M8 11v4M6 13h4M16 12h.01M18 14h.01"/>'),
+    '✈️': iconSvg('<path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/>'),
+    '💰': iconSvg('<circle cx="12" cy="12" r="9"/><path d="M16 8.5c-.8-1-2-1.5-4-1.5-2.2 0-3.5 1-3.5 2.5 0 3.5 7.5 1.5 7.5 5 0 1.5-1.3 2.5-4 2.5-1.9 0-3.4-.6-4.5-1.7M12 5v14"/>'),
+    '🛒': iconSvg('<path d="M3 4h2l2.4 11h9.8l2.3-7H6"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/>'),
+    '👕': iconSvg('<path d="M8 3 3 5v5l3-1v11h12V9l3 1V5l-5-2c-1 2-6 2-8 0Z"/>'),
+    '🏖️': iconSvg('<path d="M3 20h18M5 17c2-3 4-3 7 0 3-3 5-3 7 0"/><path d="M12 17V5l7 4H5"/>'),
+    '🏦': iconSvg('<path d="M3 9h18M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 21h18M12 3l9 6H3l9-6Z"/>'),
+    '🎯': iconSvg('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/><path d="m13 11 7-7M16 4h4v4"/>'),
+    '✨': iconSvg('<path d="m12 3 2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2L12 3Z"/>'),
+    '👗': iconSvg('<path d="M9 3h6l1 4 4 12H4L8 7l1-4Z"/><path d="M9 3c0 3 6 3 6 0M8 7h8"/>'),
+    '💅': iconSvg('<path d="M8 20c-2-4-1-9 2-11 2 1 3 3 3 6 0 3-2 5-5 5Z"/><path d="M13 20h5M15 9V5M15 5l-2-2M15 5l2-2"/>'),
+    '💄': iconSvg('<path d="M6 21h12l-2-10H8L6 21Z"/><path d="M9 11V4h6v7M9 7h6"/>'),
+    '🔧': iconSvg('<path d="M14.7 6.3a4 4 0 0 0-5-5L12 4l-3 3-3-2.3a4 4 0 0 0 5 5L20 19.3 21.3 18 12 8.7l2.7-2.4Z"/>'),
+    '💻': iconSvg('<rect x="4" y="4" width="16" height="12" rx="2"/><path d="M2 20h20M8 16l-1 4M16 16l1 4"/>'),
+    '📱': iconSvg('<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>'),
+    '🪎': iconSvg('<rect x="4" y="6" width="16" height="14" rx="3"/><path d="M8 6V4h8v2M12 10v6M9 13h6"/>'),
+    '🛍️': iconSvg('<path d="M5 8h14l1 13H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/>'),
+    '📦': iconSvg('<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="M3 8v9l9 5 9-5V8M12 13v9"/>'),
+    '📁': iconSvg('<path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/>'),
+    '👤': iconSvg('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>'),
+    '👨': iconSvg('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/><path d="M8 7c1-3 7-4 8 1"/>'),
+    '👩': iconSvg('<circle cx="12" cy="8" r="4"/><path d="M5 21c0-4 3-8 7-8s7 4 7 8"/><path d="M8 5c1-3 7-3 8 0"/>'),
+    '👦': iconSvg('<circle cx="12" cy="9" r="4"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7"/><path d="M7 7c2-4 8-4 10 0"/>'),
+    '👧': iconSvg('<circle cx="12" cy="9" r="4"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7"/><path d="M8 5c1-3 7-3 8 0"/>'),
+    '👶': iconSvg('<circle cx="12" cy="9" r="5"/><path d="M6 21c1-4 3-6 6-6s5 2 6 6"/><path d="M10 9h.01M14 9h.01"/>'),
+    '👵': iconSvg('<circle cx="12" cy="9" r="4"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7"/><path d="M7 8c1-5 9-5 10 0"/>'),
+    '🧑': iconSvg('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>'),
+    '🧔': iconSvg('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/><path d="M8 10c1 4 7 4 8 0"/>'),
+    '👱': iconSvg('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/><path d="M7 7c2-5 8-5 10 0"/>'),
+    '🧓': iconSvg('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/><path d="M8 12c2 2 6 2 8 0"/>'),
+    '👥': iconSvg('<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.5-7 6-7s6 3 6 7M14 14c3-1 6 1 7 4"/>'),
+    '📊': iconSvg('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
+    '📜': iconSvg('<path d="M6 3h12v18H6z"/><path d="M9 7h6M9 11h6M9 15h4"/>'),
+    '⚙️': iconSvg('<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 3.1a7 7 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1a7 7 0 0 0 1.7 1l.3 3.1h5l.3-3.1a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.5c.1-.3.1-.7.1-1Z"/>'),
+    '👁️': iconSvg('<path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="3"/>'),
+    '➕': iconSvg('<path d="M12 5v14M5 12h14"/>'),
+    '➖': iconSvg('<path d="M5 12h14"/>'),
+    '🔄': iconSvg('<path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 9A7 7 0 0 1 17 6l3 3M4 15l3 3a7 7 0 0 0 11.5-3"/>'),
+    '🗑️': iconSvg('<path d="M4 7h16M10 11v6M14 11v6M5 7l1 14h12l1-14M9 7V4h6v3"/>'),
+    '💵': iconSvg('<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M7 9h.01M17 15h.01"/>')
+};
+
+['💁‍♀️','🧙‍♀️','👮','🧛‍♂️','👸','🫅','🕵️','👨‍👩‍👧','👩‍💼','👨‍🍳','👩‍🍳','👨‍','👩‍🎓','👨‍💻','‍💻','🧑‍💻'].forEach(function(emoji) {
+    ICON_SVGS[emoji] = iconSvg('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>');
+});
+
+function getIconSVG(emoji, size) {
+    size = size || 24;
+    if (USER_EMOJIS.indexOf(emoji) !== -1) {
+        return '<span class="emoji-avatar" aria-hidden="true" style="width:' + size + 'px;height:' + size + 'px;font-size:' + Math.round(size * 0.9) + 'px">' + escapeHtml(emoji) + '</span>';
+    }
+    var normalizedEmoji = String(emoji || '').replace(/\uFE0F/g, '');
+    var iconKey = ICON_SVGS[emoji] ? emoji : Object.keys(ICON_SVGS).find(function(key) {
+        return key.replace(/\uFE0F/g, '') === normalizedEmoji;
+    });
+    var svg = iconKey ? ICON_SVGS[iconKey] : null;
+    if (!svg) {
+        var fallback = USER_EMOJIS.indexOf(emoji) !== -1
+            ? iconSvg('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>')
+            : iconSvg('<path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/>');
+        return fallback.replace('<svg ', '<svg style="width:' + size + 'px;height:' + size + 'px" ');
+    }
+    return svg.replace('<svg ', '<svg style="width:' + size + 'px;height:' + size + 'px" ');
+}
+
 // ===== STATE =====
 var state = {
     users: [],
@@ -37,6 +116,8 @@ var statsChart = null;
 var currentTimeFilter = 'all';
 var currentUserFilter = 'all';
 var selectedEnvelopes = [];
+var envelopeSelectionDeselectAll = false;
+var envelopeSelectionMode = 'all';
 var balanceChart = null;
 var dailyExpenseChart = null;
 var expenseStructureChart = null;
@@ -66,7 +147,7 @@ var onboardingSteps = [
     {
         icon: '📁',
         title: 'Что такое конверты?',
-        text: 'Конверт — это виртуальная категория для ваших целей. Создайте конверты для продуктов 🍔, транспорта 🚗 или накоплений 🎯. Когда получаете наличные, просто раскладывайте их по конвертам. Так вы всегда будете знать, сколько денег осталось на конкретную цель.'
+        text: 'Конверт — это виртуальная категория для ваших целей. Создайте конверты для продуктов, транспорта или накоплений. Когда получаете наличные, просто раскладывайте их по конвертам. Так вы всегда будете знать, сколько денег осталось на конкретную цель.'
     },
     {
         icon: '📊',
@@ -124,7 +205,7 @@ function renderOnboardingStep() {
     wrapper.offsetHeight; /* trigger reflow */
     wrapper.style.animation = 'fadeSlideUp 0.4s ease forwards';
     
-    document.getElementById('onboardingIcon').textContent = step.icon;
+    document.getElementById('onboardingIcon').innerHTML = getIconSVG(step.icon, 56);
     document.getElementById('onboardingTitle').textContent = step.title;
     document.getElementById('onboardingText').innerHTML = step.text;
     
@@ -170,6 +251,9 @@ function finishOnboardingMaster() {
     const currentUser = getCurrentUser();
     if (currentUser) {
         localStorage.setItem('hasSeenOnboardingMaster_' + currentUser.id, 'true');
+        if (currentScreen === 'home' && !localStorage.getItem('hasSeenMainTour_' + currentUser.id)) {
+            setTimeout(() => startTour('main'), 450);
+        }
     }
 }
 
@@ -179,68 +263,68 @@ var tours = {
     main: [
         {
             target: '.header',
-            title: '🪎 Общий баланс',
+            title: 'Общий баланс',
             text: 'Здесь отображается общая сумма наличных по всем конвертам. Также вы видите разбивку: ваши личные конверты, общие и нераспределенный остаток в "банке".'
         },
         {
             target: '#createEnvelopeBtn, .empty-state .btn-primary',
-            title: '📁 Создание конверта',
+            title: 'Создание конверта',
             text: 'Нажмите эту кнопку, чтобы создать свой первый конверт. Конверт — это виртуальная категория для ваших целей: продукты, транспорт, накопления.'
         },
         {
             target: '#fabDistribution',
-            title: '✨ Распределение денег',
+            title: 'Распределение денег',
             text: 'Нажмите эту кнопку, чтобы умный алгоритм разложил наличные по конвертам в соответствии с заданными процентами и приоритетами.'
         }
     ],
     stats: [
         {
             target: '.stats-filters',
-            title: '🔍 Гибкие фильтры',
+            title: 'Гибкие фильтры',
             text: 'Настраивайте отображение данных: выберите период, конкретного пользователя или тип конверта, чтобы увидеть точную картину.'
         },
         {
             target: '#kpiGrid',
-            title: '📊 Ключевые показатели',
+            title: 'Ключевые показатели',
             text: 'Здесь вы видите сводку: сколько поступило, сколько потрачено, текущий баланс и количество переводов за выбранный период.'
         },
         {
             target: '.chart-section',
-            title: '📈 Наглядные графики',
+            title: 'Наглядные графики',
             text: 'Графики покажут динамику баланса, расходы по дням и структуру трат по конвертам. Используйте выпадающий список для выбора конкретного конверта.'
         }
     ],
     history: [
         {
             target: '.operation-type-filter',
-            title: '🏷️ Типы операций',
+            title: 'Типы операций',
             text: 'Фильтруйте историю: смотрите только пополнения, траты, переводы или технические ручные корректировки.'
         },
         {
             target: '#historyMainList',
-            title: '📜 Хронология действий',
+            title: 'Хронология действий',
             text: 'Здесь записаны все операции. Групповые распределения сворачиваются в одну строку для удобства. Нажмите на строку, чтобы увидеть детали.'
         }
     ], 
     settings: [
         {
             target: '.settings-page-section:first-child',
-            title: '‍👩‍👧 Ваша семья',
+            title: 'Ваша семья',
             text: 'Здесь отображается код вашей семьи. Поделитесь им с близкими, чтобы они могли присоединиться. Кнопка "Выйти из семьи" позволит выйти из текущего аккаунта.'
         },
         {
             target: '.settings-page-section:nth-child(2)',
-            title: '💾 Резервное копирование',
+            title: 'Резервное копирование',
             text: 'Вы можете скачать все данные в JSON-файл для безопасного хранения, или загрузить данные из ранее сохранённого файла. Рекомендуем делать резервные копии регулярно.'
         },
         {
             target: '.settings-page-section:nth-child(3)',
-            title: '🎓 Обучение и подсказки',
+            title: 'Обучение и подсказки',
             text: 'Здесь можно сбросить прогресс обучения, если вы хотите пройти туры заново. Кнопки позволяют сбросить отдельный тур или все сразу.'
         },
         {
             target: '.danger-zone',
-            title: '⚠️ Опасная зона',
+            title: 'Опасная зона',
             text: 'Кнопка "Стереть все данные" безвозвратно удалит всю информацию о семье, конвертах и транзакциях. Используйте только в крайнем случае!'
         }
     ],
@@ -252,7 +336,7 @@ var tours = {
         },
         {
             target: '#usersList + .btn-primary',
-            title: '➕ Добавить участника',
+            title: 'Добавить участника',
             text: 'Нажмите эту кнопку, чтобы добавить нового участника вручную. Задайте имя, эмодзи и цвет. Либо поделитесь кодом семьи — тогда участник появится автоматически при входе.'
         }
     ]
@@ -260,42 +344,42 @@ var tours = {
 
 var modalTours = {
     createEnvelope: [
-        { target: '#envelopeEmojiPicker', title: '🎨 Иконка', text: 'Выберите иконку, которая ассоциируется с целью конверта. Это поможет быстро находить его в списке.' },
-        { target: '#envelopeName', title: '📝 Название', text: 'Введите понятное название: "Продукты", "Транспорт", "Копилка на отпуск".' },
-        { target: '.envelope-type-toggle', title: '👤 Тип конверта', text: 'Личный — конверт принадлежит только вам. Общий — виден всем участникам семьи, и каждый может указать свой процент.' },
-        { target: '#envelopePercentContainer', title: '📊 Проценты', text: 'Укажите, какой процент от дохода вы хотите откладывать сюда. Сумма процентов по всем вашим конвертам не должна превышать 100%.' },
+        { target: '#envelopeEmojiPicker', title: 'Иконка', text: 'Выберите иконку, которая ассоциируется с целью конверта. Это поможет быстро находить его в списке.' },
+        { target: '#envelopeName', title: 'Название', text: 'Введите понятное название: "Продукты", "Транспорт", "Копилка на отпуск".' },
+        { target: '.envelope-type-toggle', title: 'Тип конверта', text: 'Личный — конверт принадлежит только вам. Общий — виден всем участникам семьи, и каждый может указать свой процент.' },
+        { target: '#envelopePercentContainer', title: 'Проценты', text: 'Укажите, какой процент от дохода вы хотите откладывать сюда. Сумма процентов по всем вашим конвертам не должна превышать 100%.' },
         { 
             target: '.modal-section:nth-child(2) .form-row', 
-            title: '⚙️ Округление и шаг', 
+            title: 'Округление и шаг', 
             text: 'Округление определяет, как алгоритм будет распределять сумму. Шаг — это число, кратное которому будет результат (100, 500, 1000 ₽).' 
         },
-        { target: '#envelopeGoal', title: '🎯 Цель накопления', text: 'Укажите желаемую сумму. Приложение будет показывать прогресс заполнения конверта относительно этой цели.' },
-        { target: '#envelopePriorityDenom', title: '💵 Приоритетный номинал', text: 'Если вы хотите, чтобы в этот конверт клались купюры определённого номинала (например, только 5000 ₽), выберите его здесь.' },
+        { target: '#envelopeGoal', title: 'Цель накопления', text: 'Укажите желаемую сумму. Приложение будет показывать прогресс заполнения конверта относительно этой цели.' },
+        { target: '#envelopePriorityDenom', title: 'Приоритетный номинал', text: 'Если вы хотите, чтобы в этот конверт клались купюры определённого номинала (например, только 5000 ₽), выберите его здесь.' },
         { target: '#priorityEnvelopeContainer', title: '⭐ Приоритетный конверт', text: 'Если этот конверт для вас важнее остальных, сделайте его приоритетным. При распределении он будет наполняться первым.' },
-        { target: '#envelopeBills', title: '💰 Начальный состав', text: 'Если у вас уже есть наличные для этого конверта, укажите количество купюр. Если нет — оставьте нули, вы сможете добавить деньги позже.' }
+        { target: '#envelopeBills', title: 'Начальный состав', text: 'Если у вас уже есть наличные для этого конверта, укажите количество купюр. Если нет — оставьте нули, вы сможете добавить деньги позже.' }
     ],
     editEnvelope: [
-        { target: '.modal-section:first-child', title: '📁 Данные конверта', text: 'Здесь можно изменить название и увидеть текущую сумму и тип конверта.' },
-        { target: '#detailEnvelopeSettings > .settings-summary', title: '⚙️ Настройки конверта', text: 'Дополнительные параметры свернуты, чтобы не перегружать окно. Нажмите «Далее», чтобы открыть их.' },
+        { target: '.modal-section:first-child', title: 'Данные конверта', text: 'Здесь можно изменить название и увидеть текущую сумму и тип конверта.' },
+        { target: '#detailEnvelopeSettings > .settings-summary', title: 'Настройки конверта', text: 'Дополнительные параметры свернуты, чтобы не перегружать окно. Нажмите «Далее», чтобы открыть их.' },
         { target: '.settings-panel-body .form-row', title: '↕️ Округление и шаг', text: 'Выберите правило округления и шаг, кратно которому распределяются деньги.' },
-        { target: '#detailEnvelopeGoal', title: '🎯 Цель накопления', text: 'Укажите желаемую сумму, чтобы видеть прогресс накопления в конверте.' },
-        { target: '#detailPriorityDenom', title: '💵 Приоритетный номинал', text: 'Можно указать, купюры какого номинала алгоритму желательно направлять в этот конверт.' },
-        { target: '.action-grid .action-button:nth-child(1)', title: '✏️ Состав купюр', text: 'Откройте редактор, чтобы вручную скорректировать количество купюр в конверте.' },
-        { target: '.action-grid .action-button:nth-child(2)', title: '🔄 Перевод между конвертами', text: 'Переложите деньги из этого конверта в другой.' },
-        { target: '.action-grid .action-button:nth-child(3)', title: '➖ Взять (потратить)', text: 'Зафиксируйте сумму, которую вы потратили из этого конверта.' },
-        { target: '.action-grid .action-button:nth-child(4)', title: '➕ Пополнить', text: 'Добавьте деньги в конверт и укажите состав купюр.' },
-        { target: '.action-grid .action-button-full', title: '📜 История конверта', text: 'Просмотрите операции пополнения, трат и переводов по этому конверту.' },
-        { target: '#detailEnvelopeBillsSummary', title: '💰 Текущий состав', text: 'Здесь показано, сколько купюр каждого номинала сейчас находится в конверте.' }
+        { target: '#detailEnvelopeGoal', title: 'Цель накопления', text: 'Укажите желаемую сумму, чтобы видеть прогресс накопления в конверте.' },
+        { target: '#detailPriorityDenom', title: 'Приоритетный номинал', text: 'Можно указать, купюры какого номинала алгоритму желательно направлять в этот конверт.' },
+        { target: '.action-grid .action-button:nth-child(1)', title: 'Состав купюр', text: 'Откройте редактор, чтобы вручную скорректировать количество купюр в конверте.' },
+        { target: '.action-grid .action-button:nth-child(2)', title: 'Перевод между конвертами', text: 'Переложите деньги из этого конверта в другой.' },
+        { target: '.action-grid .action-button:nth-child(3)', title: 'Взять (потратить)', text: 'Зафиксируйте сумму, которую вы потратили из этого конверта.' },
+        { target: '.action-grid .action-button:nth-child(4)', title: 'Пополнить', text: 'Добавьте деньги в конверт и укажите состав купюр.' },
+        { target: '.action-grid .action-button-full', title: 'История конверта', text: 'Просмотрите операции пополнения, трат и переводов по этому конверту.' },
+        { target: '#detailEnvelopeBillsSummary', title: 'Текущий состав', text: 'Здесь показано, сколько купюр каждого номинала сейчас находится в конверте.' }
     ],
     distribution: [
-        { target: '#distributionTotalAmount', title: '💰 Общая сумма', text: 'Введите общую сумму наличных, которую вы хотите распределить по конвертам прямо сейчас.' },
-        { target: '#distributionBillsInput', title: '🏦 Состав купюр', text: 'Укажите, купюры каких номиналов и в каком количестве вы раскладываете. Сумма должна точно совпадать с общей.' },
-        { target: '#distributionFooter1 .btn-primary', title: '✅ Проверить и разложить', text: 'Нажмите "Проверить сумму". Если всё верно, алгоритм автоматически распределит деньги по конвертам согласно вашим настройкам.' }
+        { target: '#distributionTotalAmount', title: 'Общая сумма', text: 'Введите общую сумму наличных, которую вы хотите распределить по конвертам прямо сейчас.' },
+        { target: '#distributionBillsInput', title: 'Состав купюр', text: 'Укажите, купюры каких номиналов и в каком количестве вы раскладываете. Сумма должна точно совпадать с общей.' },
+        { target: '#distributionFooter1 .btn-primary', title: 'Проверить и разложить', text: 'Нажмите "Проверить сумму". Если всё верно, алгоритм автоматически распределит деньги по конвертам согласно вашим настройкам.' }
     ],
     distributionStep2: [
-        { target: '#distributionResult', title: '📦 Результат распределения', text: 'Здесь показано, сколько денег попадёт в каждый конверт. Купюры разложены по номиналам согласно вашим настройкам.' },
+        { target: '#distributionResult', title: 'Результат распределения', text: 'Здесь показано, сколько денег попадёт в каждый конверт. Купюры разложены по номиналам согласно вашим настройкам.' },
         { target: '.bill-visual', title: ' Ручная корректировка', text: 'Нажмите на любую купюру в результате, чтобы переложить её в другой конверт. Это полезно, если алгоритм разложил не так, как вы хотели.' },
-        { target: '#distributionFooter2 .btn-primary', title: '✅ Подтвердить', text: 'Если всё устраивает, нажмите "Разложить по конвертам". Деньги будут перемещены, и операция запишется в историю.' }
+        { target: '#distributionFooter2 .btn-primary', title: 'Подтвердить', text: 'Если всё устраивает, нажмите "Разложить по конвертам". Деньги будут перемещены, и операция запишется в историю.' }
     ]
 };
 
@@ -355,7 +439,7 @@ function renderModalTourStep() {
     
     const nextBtn = document.getElementById('modalTourNextBtn');
     if (currentModalTourStepIndex === tour.length - 1) {
-        nextBtn.textContent = 'Понятно ✓';
+        nextBtn.textContent = 'Понятно';
     } else {
         nextBtn.textContent = 'Далее →';
     }
@@ -512,7 +596,7 @@ function renderTourStep() {
     
     const nextBtn = document.getElementById('tourNextBtn');
     if (currentTourStepIndex === tour.length - 1) {
-        nextBtn.textContent = 'Завершить ✓';
+        nextBtn.textContent = 'Завершить';
     } else {
         nextBtn.textContent = 'Далее →';
     }
@@ -888,7 +972,7 @@ async function joinFamily() {
 
 function enterFamily() {
     if (state.users.length === 0) switchScreen('onboarding');
-    else switchScreen('home');
+    else showSelectUserScreen();
 }
 
 function copyFamilyCode() {
@@ -979,10 +1063,10 @@ function renderUserSelectList() {
         btn.onmouseenter = function() { btn.style.borderColor = user.color; btn.style.background = user.color + '10'; };
         btn.onmouseleave = function() { btn.style.borderColor = 'var(--gray-200)'; btn.style.background = 'var(--white)'; };
         btn.onclick = function() { selectExistingUser(user.id); };
-        btn.innerHTML = '<div style="width:40px; height:40px; border-radius:50%; background:' + user.color + '20; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;">' + user.emoji + '</div>' +
+        btn.innerHTML = '<div style="width:40px; height:40px; border-radius:50%; background:' + user.color + '20; color:' + user.color + '; display:flex; align-items:center; justify-content:center; flex-shrink:0;">' + getIconSVG(user.emoji, 22) + '</div>' +
             '<div style="flex:1; min-width:0;">' +
                 '<div style="font-size:15px; font-weight:700; color:var(--text-primary);">' + escapeHtml(user.name) + '</div>' +
-                '<div style="font-size:11px; color:var(--text-secondary);">' + (user.isCreator ? '👑 Создатель семьи' : 'Участник') + '</div>' +
+                '<div style="font-size:11px; color:var(--text-secondary);">' + (user.isCreator ? 'Создатель семьи' : 'Участник') + '</div>' +
             '</div>' +
             '<div style="font-size:18px; color:var(--text-secondary);">→</div>';
         container.appendChild(btn);
@@ -1007,8 +1091,16 @@ function selectExistingUser(userId) {
 
 
 // ===== SCREEN MANAGEMENT =====
+function updateFamilyInterfaceVisibility() {
+    const app = document.querySelector('.app');
+    const hasFamily = Boolean(localStorage.getItem('familyCode'));
+    const hasCurrentUser = Boolean(state.currentUserId);
+    if (app) app.classList.toggle('no-family', !hasFamily || !hasCurrentUser);
+}
+
 function switchScreen(screenId) {
     currentScreen = screenId;
+    updateFamilyInterfaceVisibility();
     document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
     var target = document.getElementById('screen-' + screenId);
     if (target) target.classList.add('active');
@@ -1046,7 +1138,12 @@ function switchScreen(screenId) {
     }
     // Логика запуска интерактивного тура при первом переходе на вкладку
     const userId = state.currentUserId;
-    if (screenId === 'home' && !localStorage.getItem('hasSeenMainTour_' + userId)) {
+    const onboardingOverlay = document.getElementById('onboardingMasterOverlay');
+    const onboardingVisible = onboardingOverlay && (onboardingOverlay.classList.contains('active') || onboardingOverlay.style.display === 'flex');
+    const onboardingNotFinished = userId && !localStorage.getItem('hasSeenOnboardingMaster_' + userId);
+    if (onboardingVisible || onboardingNotFinished) {
+        // Не запускаем туры поверх приветственного обучения.
+    } else if (screenId === 'home' && !localStorage.getItem('hasSeenMainTour_' + userId)) {
         setTimeout(() => startTour('main'), 600);
     } else if (screenId === 'stats' && !localStorage.getItem('hasSeenStatsTour_' + userId)) {
         setTimeout(() => startTour('stats'), 600);
@@ -1067,7 +1164,7 @@ function openAddUserModal() {
     editingUserId = null;
     selectedUserEmoji = '👤';
     selectedUserColor = USER_COLORS[state.users.length % USER_COLORS.length];
-    document.getElementById('userModalTitle').textContent = '👤 Добавить участника';
+    document.getElementById('userModalTitle').textContent = 'Добавить участника';
     document.getElementById('userNameInput').value = '';
     hideError('userModalError');
     renderUserEmojiPicker();
@@ -1081,7 +1178,7 @@ function openEditUserModal(userId) {
     editingUserId = userId;
     selectedUserEmoji = user.emoji;
     selectedUserColor = user.color;
-    document.getElementById('userModalTitle').textContent = '✏️ Редактировать участника';
+    document.getElementById('userModalTitle').textContent = 'Редактировать участника';
     document.getElementById('userNameInput').value = user.name;
     hideError('userModalError');
     renderUserEmojiPicker();
@@ -1096,7 +1193,7 @@ function renderUserEmojiPicker() {
     USER_EMOJIS.forEach(function(emoji) {
         var btn = document.createElement('button');
         btn.className = 'emoji-option' + (emoji === selectedUserEmoji ? ' selected' : '');
-        btn.textContent = emoji;
+        btn.innerHTML = '<span class="emoji-avatar" aria-hidden="true">' + escapeHtml(emoji) + '</span>';
         btn.onclick = function() {
             selectedUserEmoji = emoji;
             container.querySelectorAll('.emoji-option').forEach(function(b) { b.classList.remove('selected'); });
@@ -1146,7 +1243,7 @@ async function saveUser() {
     renderUsersList();
     renderSidebarUserList();
     renderMobileUserSwitcher();
-    showSuccessMessage('usersMessage', editingUserId ? '✅ Участник обновлён!' : '✅ Участник добавлен!');
+    showSuccessMessage('usersMessage', editingUserId ? 'Участник обновлён!' : 'Участник добавлен!');
 }
 
 async function deleteUser(userId) {
@@ -1174,7 +1271,7 @@ async function deleteUser(userId) {
     renderUsersList();
     renderSidebarUserList();
     renderMobileUserSwitcher();
-    showSuccessMessage('usersMessage', '️ Участник удалён');
+    showSuccessMessage('usersMessage', 'Участник удалён');
 }
 
 function renderUsersList() {
@@ -1189,14 +1286,14 @@ function renderUsersList() {
         var envelopeCount = state.envelopes.filter(function(e) { return e.owners && e.owners.length === 1 && e.owners[0] === user.id; }).length;
         var card = document.createElement('div');
         card.className = 'user-card';
-        card.innerHTML = '<div class="user-card-avatar" style="background: ' + user.color + '20; color: ' + user.color + ';">' + user.emoji + '</div>' +
+        card.innerHTML = '<div class="user-card-avatar" style="background: ' + user.color + '20; color: ' + user.color + ';">' + getIconSVG(user.emoji, 24) + '</div>' +
             '<div class="user-card-info">' +
                 '<div class="user-card-name">' + escapeHtml(user.name) + (user.isCreator ? '<span class="user-card-badge">Создатель</span>' : '') + '</div>' +
                 '<div class="user-card-stats">' + envelopeCount + ' личных конверт(ов)</div>' +
             '</div>' +
             '<div class="user-card-actions">' +
-                '<button class="user-card-btn" onclick="openEditUserModal(\'' + user.id + '\')" title="Редактировать">✏️</button>' +
-                '<button class="user-card-btn danger" onclick="deleteUser(\'' + user.id + '\')" title="Удалить" ' + (user.isCreator ? 'disabled' : '') + '>🗑️</button>' +
+                '<button class="user-card-btn" onclick="openEditUserModal(\'' + user.id + '\')" title="Редактировать" aria-label="Редактировать участника"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 16.5-.8 4.3 4.3-.8L19 8.5 15.5 5 4 16.5Z"/><path d="m13.5 7 3.5 3.5"/></svg></button>' +
+                '<button class="user-card-btn danger" onclick="deleteUser(\'' + user.id + '\')" title="Удалить" aria-label="Удалить участника" ' + (user.isCreator ? 'disabled' : '') + '>' + getIconSVG('🗑️', 17) + '</button>' +
             '</div>';
         container.appendChild(card);
     });
@@ -1210,7 +1307,7 @@ function renderSidebarUserList() {
         var btn = document.createElement('button');
         btn.className = 'sidebar-user-btn' + (state.currentUserId === user.id ? ' active' : '');
         btn.style.borderLeft = '3px solid ' + user.color;
-        btn.innerHTML = '<span class="sidebar-user-emoji">' + user.emoji + '</span><span class="sidebar-user-name">' + escapeHtml(user.name) + '</span>';
+        btn.innerHTML = '<span class="sidebar-user-emoji">' + getIconSVG(user.emoji, 18) + '</span><span class="sidebar-user-name">' + escapeHtml(user.name) + '</span>';
         btn.onclick = function() {
             state.currentUserId = user.id;
             localStorage.setItem('currentUserId', user.id);
@@ -1229,7 +1326,7 @@ function renderMobileUserSwitcher() {
     state.users.forEach(function(user) {
         var btn = document.createElement('button');
         btn.className = 'mobile-user-btn' + (state.currentUserId === user.id ? ' active' : '');
-        btn.innerHTML = '<span class="mobile-user-btn-emoji">' + user.emoji + '</span>' + escapeHtml(user.name);
+        btn.innerHTML = '<span class="mobile-user-btn-emoji">' + getIconSVG(user.emoji, 18) + '</span>' + escapeHtml(user.name);
         btn.onclick = function() {
             state.currentUserId = user.id;
             localStorage.setItem('currentUserId', user.id);
@@ -1249,7 +1346,7 @@ function renderUserFilter(containerId, activeUserId, callback) {
     var allBtn = document.createElement('button');
     allBtn.className = 'user-filter-btn' + (activeUserId === 'all' ? ' active' : '');
     allBtn.setAttribute('data-user-id', 'all');
-    allBtn.innerHTML = '👁️ Все';
+    allBtn.textContent = 'Все';
     allBtn.onclick = function() { callback('all', allBtn); };
     container.appendChild(allBtn);
     
@@ -1258,7 +1355,7 @@ function renderUserFilter(containerId, activeUserId, callback) {
         var btn = document.createElement('button');
         btn.className = 'user-filter-btn' + (activeUserId === user.id ? ' active' : '');
         btn.setAttribute('data-user-id', user.id);
-        btn.innerHTML = '<span class="user-filter-btn-emoji">' + user.emoji + '</span>' + escapeHtml(user.name);
+        btn.innerHTML = '<span class="user-filter-btn-emoji">' + getIconSVG(user.emoji, 18) + '</span>' + escapeHtml(user.name);
         btn.onclick = function() { callback(user.id, btn); };
         container.appendChild(btn);
     });
@@ -1286,6 +1383,8 @@ function renderEnvelopeTypeFilter() {
             
             // Сбрасываем выбранные конверты, если они не соответствуют новым фильтрам
             var validEnvelopes = getEnvelopesByFilters().map(function(e) { return e.id; });
+            envelopeSelectionDeselectAll = false;
+            envelopeSelectionMode = 'all';
             selectedEnvelopes = selectedEnvelopes.filter(function(id) { return validEnvelopes.indexOf(id) !== -1; });
             
             renderEnvelopeMultiselect();
@@ -1310,7 +1409,7 @@ function render() {
         userLabel.style.color = currentUser && currentUser.color ? currentUser.color : 'var(--text-secondary)';
     }
     var fab = document.getElementById('fabDistribution');
-    if (fab) fab.innerHTML = '💰 Разложить (' + currentName + ')';
+    if (fab) fab.textContent = 'Разложить (' + currentName + ')';
     var distUserName = document.getElementById('distUserName');
     if (distUserName) distUserName.textContent = currentName;
     var createBtn = document.getElementById('createEnvelopeBtn');
@@ -1412,19 +1511,19 @@ function renderEnvelopes() {
         if (env.goal > 0) {
             var progress = Math.min((total / env.goal) * 100, 100);
             var isOver = total >= env.goal;
-            goalHtml = '<div class="goal-progress"><div class="goal-label"><span>🎯 Цель</span><span>' + formatMoney(total) + ' / ' + formatMoney(env.goal) + '</span></div><div class="goal-bar"><div class="goal-bar-fill' + (isOver ? ' over' : '') + '" style="width: ' + progress + '%"></div></div></div>';
+            goalHtml = '<div class="goal-progress"><div class="goal-label"><span>Цель накопления</span><span>' + formatMoney(total) + ' / ' + formatMoney(env.goal) + '</span></div><div class="goal-bar"><div class="goal-bar-fill' + (isOver ? ' over' : '') + '" style="width: ' + progress + '%"></div></div></div>';
         }
         var priorityBadge = '';
         if (env.type === 'personal' && currentUser && currentUser.priorityEnvelopeId === env.id) {
-            priorityBadge = '<span style="position:absolute;top:10px;right:10px;font-size:16px" title="Приоритетный конверт">⭐</span>';
+            priorityBadge = '<span class="envelope-priority-badge" title="Приоритетный конверт"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg>Приоритет</span>';
         }
         var ownersHtml = '';
         if (env.type === 'shared' && env.owners) {
-            var ownerNames = env.owners.map(function(oid) { var u = getUserById(oid); return u ? u.emoji + ' ' + u.name : oid; }).join(', ');
-            ownersHtml = '<div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">👥 ' + ownerNames + '</div>';
+            var ownerNames = env.owners.map(function(oid) { var u = getUserById(oid); return u ? getIconSVG(u.emoji, 14) + ' ' + escapeHtml(u.name) : oid; }).join(', ');
+            ownersHtml = '<div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">' + getIconSVG('👥', 14) + ' ' + ownerNames + '</div>';
         }
         // ИСПРАВЛЕНО: использованы обратные кавычки ` для интерполяции ${priorityBadge}
-        card.innerHTML = `${priorityBadge}<div class="envelope-card-header"><div class="envelope-icon" style="background: ` + ownerColor + `20;">` + (env.icon || '📁') + `</div><div class="envelope-name">` + escapeHtml(env.name) + `<span class="owner-badge" style="background: ` + ownerColor + `;">` + getEnvelopeOwnerLabel(env) + `</span>` + ownersHtml + `</div></div><div class="envelope-amount">` + formatMoney(total) + `</div>` + (pctText ? `<div class="envelope-percent">` + pctText + `</div>` : '') + `<div class="envelope-bills">` + renderBillsList(env.bills) + `</div>` + goalHtml;
+        card.innerHTML = `${priorityBadge}<div class="envelope-card-header"><div class="envelope-icon" style="background: ` + ownerColor + `20; color:` + ownerColor + `;">` + getIconSVG(env.icon || '📁', 28) + `</div><div class="envelope-name">` + escapeHtml(env.name) + `<span class="owner-badge" style="background: ` + ownerColor + `;">` + getEnvelopeOwnerLabel(env) + `</span>` + ownersHtml + `</div></div><div class="envelope-amount">` + formatMoney(total) + `</div>` + (pctText ? `<div class="envelope-percent">` + pctText + `</div>` : '') + `<div class="envelope-bills">` + renderBillsList(env.bills) + `</div>` + goalHtml;
         grid.appendChild(card);
     });
 }
@@ -1439,6 +1538,19 @@ function renderBillsList(bills) {
     return h || '<span style="color: var(--text-secondary); font-size: 13px;">Нет купюр</span>';
 }
 
+function renderDetailedBillsList(bills) {
+    var items = '';
+    BILL_DENOMINATIONS.forEach(function(d) {
+        var count = parseInt(bills[d]) || 0;
+        if (count <= 0) return;
+        items += '<div class="bill-summary-item">' +
+            '<div class="bill-summary-value">' + d.toLocaleString('ru-RU') + ' ₽</div>' +
+            '<div class="bill-summary-meta">' + count + ' шт. · ' + formatMoney(d * count) + '</div>' +
+            '</div>';
+    });
+    return items || '<div class="bill-summary-empty">Нет купюр</div>';
+}
+
 function renderBillCounters(cid, bills) {
     var c = document.getElementById(cid);
     if (!c) return;
@@ -1447,7 +1559,7 @@ function renderBillCounters(cid, bills) {
         var n = bills[d] || 0;
         var div = document.createElement('div');
         div.className = 'bill-counter';
-        div.innerHTML = '<span class="bill-counter-label">💵 ' + d + ' ₽</span><div class="bill-counter-controls"><button class="bill-counter-btn" onclick="decrementBill(\'' + cid + '\', ' + d + ')">−</button><span class="bill-counter-value" id="' + cid + '-' + d + '">' + n + '</span><button class="bill-counter-btn" onclick="incrementBill(\'' + cid + '\', ' + d + ')">+</button></div>';
+        div.innerHTML = '<span class="bill-counter-label">' + d + ' ₽</span><div class="bill-counter-controls"><button class="bill-counter-btn" onclick="decrementBill(\'' + cid + '\', ' + d + ')">−</button><span class="bill-counter-value" id="' + cid + '-' + d + '">' + n + '</span><button class="bill-counter-btn" onclick="incrementBill(\'' + cid + '\', ' + d + ')">+</button></div>';
         c.appendChild(div);
     });
 }
@@ -1492,7 +1604,7 @@ function renderEmojiPicker(cid, sel) {
     ENVELOPE_ICONS.forEach(function(icon) {
         var btn = document.createElement('button');
         btn.className = 'emoji-option' + (icon === sel ? ' selected' : '');
-        btn.textContent = icon;
+        btn.innerHTML = getIconSVG(icon, 24);
         btn.onclick = function() {
             selectedEmoji = icon;
             c.querySelectorAll('.emoji-option').forEach(function(b) { b.classList.remove('selected'); });
@@ -1563,7 +1675,7 @@ function renderEnvelopePercentFields() {
 
         var item = document.createElement('div');
         item.className = 'envelope-percent-item';
-        item.innerHTML = '<div class="envelope-percent-avatar" style="background: ' + user.color + '20; color: ' + user.color + ';">' + user.emoji + '</div>' +
+        item.innerHTML = '<div class="envelope-percent-avatar" style="background: ' + user.color + '20; color: ' + user.color + ';">' + getIconSVG(user.emoji, 22) + '</div>' +
             '<span class="envelope-percent-name">' + escapeHtml(user.name) + '</span>' +
             '<div class="envelope-percent-input-wrapper">' +
                 '<input type="number" class="form-input percent-input" id="envelopePercent_' + userId + '" min="0" max="' + available + '" value="0" placeholder="0" oninput="validatePercent(this, \'' + userId + '\', ' + available + ')">' +
@@ -1608,7 +1720,7 @@ function renderDetailEnvelopePercentFields(env) {
 
         var item = document.createElement('div');
         item.className = 'envelope-percent-item';
-        item.innerHTML = '<div class="envelope-percent-avatar" style="background: ' + user.color + '20; color: ' + user.color + ';">' + user.emoji + '</div>' +
+        item.innerHTML = '<div class="envelope-percent-avatar" style="background: ' + user.color + '20; color: ' + user.color + ';">' + getIconSVG(user.emoji, 22) + '</div>' +
             '<span class="envelope-percent-name">' + escapeHtml(user.name) + '</span>' +
             '<div class="envelope-percent-input-wrapper">' +
                 '<input type="number" class="form-input percent-input" id="detailPercent_' + userId + '" min="0" max="' + available + '" value="' + currentVal + '" placeholder="0" oninput="validatePercent(this, \'' + userId + '\', ' + available + ')">' +
@@ -1743,7 +1855,7 @@ function openCreateEnvelope() {
     isUserPriorityEnvelope = false;
     selectedEmoji = '';
     currentEnvelopeType = 'personal';
-    document.getElementById('envelopeModalTitle').textContent = '📁 Создать конверт';
+    document.getElementById('envelopeModalTitle').textContent = 'Создать конверт';
     document.getElementById('envelopeName').value = '';
     document.getElementById('envelopeRoundDirection').value = 'standard';
     document.getElementById('envelopeRoundStep').value = '100';
@@ -1773,7 +1885,7 @@ function openEnvelopeDetail(id) {
     currentEnvelopeId = id;
     var env = state.envelopes.find(function(e) { return e.id === id; });
     if (!env) return;
-    document.getElementById('detailEnvelopeTitle').textContent = (env.icon || '📁') + ' ' + env.name;
+    document.getElementById('detailEnvelopeTitle').innerHTML = getIconSVG(env.icon || '📁', 22) + ' ' + escapeHtml(env.name);
     document.getElementById('detailEnvelopeNameInput').value = env.name;
     document.getElementById('detailEnvelopeAmount').textContent = formatMoney(calculateEnvelopeTotal(env.bills));
     document.getElementById('detailEnvelopeRoundDirection').value = env.roundDirection || 'standard';
@@ -1789,7 +1901,7 @@ function openEnvelopeDetail(id) {
     hideError('detailEnvelopeError');
     hideError('detailPercentWarning');
     renderDetailEnvelopePercentFields(env);
-    document.getElementById('detailEnvelopeBillsSummary').innerHTML = renderBillsList(env.bills);
+    document.getElementById('detailEnvelopeBillsSummary').innerHTML = renderDetailedBillsList(env.bills);
     
     const detailPrioContainer = document.getElementById('detailPriorityEnvelopeContainer');
     if (env.type === 'personal' && env.owners && env.owners.indexOf(state.currentUserId) !== -1) {
@@ -1982,7 +2094,7 @@ async function saveBillEditor() {
     isSaving = false;
     closeModal('billEditorModal');
     document.getElementById('detailEnvelopeAmount').textContent = formatMoney(newTotal);
-    document.getElementById('detailEnvelopeBillsSummary').innerHTML = renderBillsList(env.bills);
+    document.getElementById('detailEnvelopeBillsSummary').innerHTML = renderDetailedBillsList(env.bills);
     render(); // Обновляем главную страницу сразу
 }
 
@@ -1990,7 +2102,7 @@ async function saveBillEditor() {
 
 function openPutMoney() {
     moneyActionData = { type: 'put' };
-    document.getElementById('moneyActionTitle').textContent = '➕ Пополнить конверт';
+    document.getElementById('moneyActionTitle').textContent = 'Пополнить конверт';
     document.getElementById('moneyActionComment').value = '';
     var confirmBtn = document.getElementById('moneyActionConfirmBtn');
     if (confirmBtn) confirmBtn.textContent = 'Положить';
@@ -2002,7 +2114,7 @@ function openPutMoney() {
 
 function openTakeMoney() {
     moneyActionData = { type: 'take' };
-    document.getElementById('moneyActionTitle').textContent = '➖ Взять (потратить)';
+    document.getElementById('moneyActionTitle').textContent = 'Взять (потратить)';
     document.getElementById('moneyActionComment').value = '';
     var confirmBtn = document.getElementById('moneyActionConfirmBtn');
     if (confirmBtn) confirmBtn.textContent = 'Взять';
@@ -2039,7 +2151,7 @@ async function confirmMoneyAction() {
     isSaving = false;
     closeModal('moneyActionModal');
     document.getElementById('detailEnvelopeAmount').textContent = formatMoney(calculateEnvelopeTotal(env.bills));
-    document.getElementById('detailEnvelopeBillsSummary').innerHTML = renderBillsList(env.bills);
+    document.getElementById('detailEnvelopeBillsSummary').innerHTML = renderDetailedBillsList(env.bills);
     render(); // Обновляем главную страницу сразу
 }
 
@@ -2063,7 +2175,7 @@ function openEnvelopeTransfer() {
             div.onmouseenter = function() { div.style.borderColor = 'var(--primary)'; div.style.background = 'var(--primary-light)'; };
             div.onmouseleave = function() { if (!div.classList.contains('selected')) { div.style.borderColor = 'var(--gray-200)'; div.style.background = 'var(--gray-50)'; } };
             div.onclick = function() { selectTransferBill(d, n, div); };
-            div.innerHTML = '<span style="font-weight:700;">💵 ' + d + ' ₽</span><span style="color:var(--text-secondary); font-weight:600;">' + n + ' шт.</span>';
+            div.innerHTML = '<span style="font-weight:700;">' + d + ' ₽</span><span style="color:var(--text-secondary); font-weight:600;">' + n + ' шт.</span>';
             c.appendChild(div);
         }
     });
@@ -2080,7 +2192,7 @@ function openEnvelopeTransfer() {
     others.forEach(function(e) {
         var opt = document.createElement('option');
         opt.value = e.id;
-        opt.textContent = (e.icon || '📁') + ' ' + e.name;
+        opt.textContent = e.name;
         sel.appendChild(opt);
     });
     document.getElementById('envelopeTransferCount').value = '1';
@@ -2160,7 +2272,7 @@ function checkDistributionSum() {
     if (amt !== bTot) { showError('distributionError', 'Сумма купюр (' + formatMoney(bTot) + ') ≠ ' + formatMoney(amt)); hideSuccess('distributionSumCheck'); return; }
     if (amt === 0) { showError('distributionError', 'Введите сумму'); hideSuccess('distributionSumCheck'); return; }
     hideError('distributionError');
-    document.getElementById('distributionSumCheck').textContent = '✓ Сумма: ' + formatMoney(amt);
+    document.getElementById('distributionSumCheck').textContent = 'Сумма: ' + formatMoney(amt);
     showSuccess('distributionSumCheck');
     distributionData = runDistributionAlgorithm(amt, bills);
     renderDistributionResult();
@@ -2318,7 +2430,7 @@ function renderDistributionResult() {
             var n = d.bills[dn] || 0;
             if (n > 0) bh += '<div class="bill-visual" onclick="openTransferModal(\'' + env.id + '\', ' + dn + ', ' + n + ')"><div class="bill-visual-info"><span class="bill-visual-nominal">' + dn + ' ₽</span><span class="bill-visual-count">' + n + ' шт.</span></div></div>';
         });
-        div.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;"><span style="font-weight:700; font-size:15px;">' + (d.icon || '') + ' ' + escapeHtml(d.name) + ' <span class="owner-badge" style="background: ' + ownerColor + ';">' + getEnvelopeOwnerLabel(env) + '</span></span><span style="font-weight:800; font-size:18px; color:var(--primary);">' + formatMoney(d.amount) + '</span></div>' + (bh || '<div style="color: var(--text-secondary); font-size: 14px;">Пусто</div>');
+        div.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;"><span style="display:flex;align-items:center;gap:7px;font-weight:700;font-size:15px;">' + getIconSVG(d.icon || '📁', 18) + ' ' + escapeHtml(d.name) + ' <span class="owner-badge" style="background: ' + ownerColor + ';">' + getEnvelopeOwnerLabel(env) + '</span></span><span style="font-weight:800; font-size:18px; color:var(--primary);">' + formatMoney(d.amount) + '</span></div>' + (bh || '<div style="color: var(--text-secondary); font-size: 14px;">Пусто</div>');
         c.appendChild(div);
     });
 }
@@ -2448,6 +2560,8 @@ function setUserFilter(user, btn) {
     
     // Сбрасываем выбранные конверты, если они не соответствуют новым фильтрам
     var validEnvelopes = getEnvelopesByFilters().map(function(e) { return e.id; });
+    envelopeSelectionDeselectAll = false;
+    envelopeSelectionMode = 'all';
     selectedEnvelopes = selectedEnvelopes.filter(function(id) { return validEnvelopes.indexOf(id) !== -1; });
     
     renderEnvelopeMultiselect();
@@ -2475,10 +2589,11 @@ function renderEnvelopeMultiselect() {
     envelopes.forEach(function(env) {
         var div = document.createElement('div');
         div.className = 'envelope-checkbox';
-        var isChecked = selectedEnvelopes.length === 0 || selectedEnvelopes.indexOf(env.id) !== -1;
+        var isChecked = envelopeSelectionMode === 'all' ||
+            (envelopeSelectionMode === 'specific' && selectedEnvelopes.indexOf(env.id) !== -1);
         var ownerColor = getEnvelopeOwnerColor(env);
         div.innerHTML = '<input type="checkbox" ' + (isChecked ? 'checked' : '') + ' onchange="toggleEnvelopeSelection(\'' + env.id + '\', this.checked)">' +
-            '<span class="envelope-checkbox-icon">' + (env.icon || '') + '</span>' +
+            '<span class="envelope-checkbox-icon">' + getIconSVG(env.icon || '📁', 18) + '</span>' +
             '<div class="envelope-checkbox-info">' +
                 '<span class="envelope-checkbox-name">' + escapeHtml(env.name) + '</span>' +
                 '<span class="envelope-checkbox-owner" style="color: ' + ownerColor + ';">' + getEnvelopeOwnerLabel(env) + '</span>' +
@@ -2491,16 +2606,21 @@ function renderEnvelopeMultiselect() {
 
 
 function toggleEnvelopeSelection(envId, checked) {
+    envelopeSelectionDeselectAll = false;
     if (checked) {
         if (selectedEnvelopes.indexOf(envId) === -1) selectedEnvelopes.push(envId);
+        envelopeSelectionMode = 'specific';
     } else {
         selectedEnvelopes = selectedEnvelopes.filter(function(id) { return id !== envId; });
+        envelopeSelectionMode = selectedEnvelopes.length === 0 ? 'none' : 'specific';
     }
     updateEnvelopeFilterLabel();
     refreshStats();
 }
 
 function selectAllEnvelopes() {
+    envelopeSelectionDeselectAll = false;
+    envelopeSelectionMode = 'all';
     selectedEnvelopes = getEnvelopesByFilters().map(function(e) { return e.id; });
     renderEnvelopeMultiselect();
     refreshStats();
@@ -2508,6 +2628,8 @@ function selectAllEnvelopes() {
 
 
 function deselectAllEnvelopes() {
+    envelopeSelectionDeselectAll = true;
+    envelopeSelectionMode = 'none';
     selectedEnvelopes = [];
     renderEnvelopeMultiselect();
     refreshStats();
@@ -2534,7 +2656,8 @@ function selectSharedEnvelopes() {
 function updateEnvelopeFilterLabel() {
     var label = document.getElementById('envelopeFilterLabel');
     if (!label) return;
-    if (selectedEnvelopes.length === 0) { label.textContent = 'Все конверты (' + state.envelopes.length + ')'; }
+    if (envelopeSelectionMode === 'none') { label.textContent = 'Конверты не выбраны'; }
+    else if (envelopeSelectionMode === 'all') { label.textContent = 'Все конверты (' + state.envelopes.length + ')'; }
     else if (selectedEnvelopes.length === 1) {
         var env = state.envelopes.find(function(e) { return e.id === selectedEnvelopes[0]; });
         label.textContent = env ? env.name : '1 конверт';
@@ -2582,7 +2705,8 @@ function getFilteredTransactions() {
             if (!involvesMatchingEnvelope) return false;
         }
         
-        if (selectedEnvelopes.length > 0) {
+        if (envelopeSelectionMode === 'none') return false;
+        if (envelopeSelectionMode === 'specific') {
             if (selectedEnvelopes.indexOf(t.from) === -1 && selectedEnvelopes.indexOf(t.to) === -1) return false;
         }
         return true;
@@ -2634,7 +2758,9 @@ function renderKPI() {
 
     // Добавляем баланс конвертов с учётом фильтров
     var envelopesToShow = getEnvelopesByFilters();
-    if (selectedEnvelopes.length > 0) {
+    if (envelopeSelectionMode === 'none') {
+        envelopesToShow = [];
+    } else if (envelopeSelectionMode === 'specific') {
         envelopesToShow = envelopesToShow.filter(function(e) { 
             return selectedEnvelopes.indexOf(e.id) !== -1; 
         });
@@ -2663,12 +2789,12 @@ function renderKPI() {
     document.getElementById('kpiActiveDays').textContent = days.size;
     var incomeTrendEl = document.getElementById('kpiIncomeTrend');
     if (prevInc > 0) {
-        incomeTrendEl.textContent = (incomeTrend >= 0 ? ' +' : '📉 ') + incomeTrend + '%';
+        incomeTrendEl.textContent = (incomeTrend >= 0 ? '+' : '') + incomeTrend + '%';
         incomeTrendEl.className = 'kpi-trend ' + (incomeTrend >= 0 ? 'positive' : 'negative');
     } else incomeTrendEl.textContent = '';
     var expenseTrendEl = document.getElementById('kpiExpenseTrend');
     if (prevExp > 0) {
-        expenseTrendEl.textContent = (expenseTrend >= 0 ? '📈 +' : '📉 ') + expenseTrend + '%';
+        expenseTrendEl.textContent = (expenseTrend >= 0 ? '+' : '') + expenseTrend + '%';
         expenseTrendEl.className = 'kpi-trend ' + (expenseTrend <= 0 ? 'positive' : 'negative');
     } else expenseTrendEl.textContent = '';
 }
@@ -2676,7 +2802,8 @@ function renderKPI() {
 
 function renderBalanceChart() {
     var filtered = getFilteredTransactions();
-    var envelopeId = document.getElementById('balanceChartEnvelope').value;
+    var hiddenSelect = document.getElementById('balanceChartEnvelope');
+    var envelopeId = hiddenSelect ? hiddenSelect.value : 'all';
     var dailyBalance = {};
     var runningBalance = 0;
     var sorted = filtered.slice().sort(function(a, b) { return new Date(a.date) - new Date(b.date); });
@@ -2765,19 +2892,69 @@ function renderExpenseStructureChart() {
 }
 
 function updateBalanceChartEnvelopeSelect() {
-    var select = document.getElementById('balanceChartEnvelope');
-    if (!select) return;
-    select.innerHTML = '<option value="all">Общий баланс</option>';
+    var dropdown = document.getElementById('balanceEnvelopeDropdown');
+    var hiddenSelect = document.getElementById('balanceChartEnvelope');
+    var toggleIcon = document.getElementById('balanceEnvelopeToggleIcon');
+    var toggleLabel = document.getElementById('balanceEnvelopeToggleLabel');
+    if (!dropdown || !hiddenSelect) return;
+    dropdown.innerHTML = '';
+
+    var selectedId = hiddenSelect.value || 'all';
+
+    var allButton = document.createElement('button');
+    allButton.type = 'button';
+    allButton.className = 'balance-envelope-option' + (selectedId === 'all' ? ' active' : '');
+    allButton.innerHTML = '<span class="balance-envelope-option-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M16 8.5c-.8-1-2-1.5-4-1.5-2.2 0-3.5 1-3.5 2.5 0 3.5 7.5 1.5 7.5 5 0 1.5-1.3 2.5-4 2.5-1.9 0-3.4-.6-4.5-1.7M12 5v14"/></svg></span><span>Общий баланс</span>';
+    allButton.onclick = function() { selectBalanceEnvelope('all', 'Общий баланс', ''); };
+    dropdown.appendChild(allButton);
     
-    // Получаем конверты в зависимости от фильтров
     var envelopes = getEnvelopesByFilters();
-    
     envelopes.forEach(function(env) {
-        var option = document.createElement('option');
-        option.value = env.id;
-        option.textContent = (env.icon || '') + ' ' + env.name + ' (' + getEnvelopeOwnerLabel(env) + ')';
-        select.appendChild(option);
+        var option = document.createElement('button');
+        option.type = 'button';
+        option.className = 'balance-envelope-option' + (selectedId === env.id ? ' active' : '');
+        var label = env.name + ' (' + getEnvelopeOwnerLabel(env) + ')';
+        option.innerHTML = '<span class="balance-envelope-option-icon">' + getIconSVG(env.icon || '📁', 18) + '</span><span class="balance-envelope-option-label">' + escapeHtml(label) + '</span>';
+        option.onclick = function() { selectBalanceEnvelope(env.id, label, env.icon || '📁'); };
+        dropdown.appendChild(option);
     });
+
+    if (selectedId !== 'all') {
+        var selectedEnv = envelopes.find(function(env) { return env.id === selectedId; });
+        if (!selectedEnv) {
+            hiddenSelect.value = 'all';
+            if (toggleLabel) toggleLabel.textContent = 'Общий баланс';
+            if (toggleIcon) toggleIcon.innerHTML = '';
+        } else {
+            if (toggleLabel) toggleLabel.textContent = selectedEnv.name + ' (' + getEnvelopeOwnerLabel(selectedEnv) + ')';
+            if (toggleIcon) toggleIcon.innerHTML = getIconSVG(selectedEnv.icon || '📁', 18);
+        }
+    } else {
+        if (toggleLabel) toggleLabel.textContent = 'Общий баланс';
+        if (toggleIcon) toggleIcon.innerHTML = '';
+    }
+}
+
+function toggleBalanceEnvelopeSelect() {
+    var dropdown = document.getElementById('balanceEnvelopeDropdown');
+    var toggle = document.getElementById('balanceEnvelopeToggle');
+    if (!dropdown || !toggle) return;
+    var open = dropdown.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+function selectBalanceEnvelope(id, label, icon) {
+    var hiddenSelect = document.getElementById('balanceChartEnvelope');
+    var toggleLabel = document.getElementById('balanceEnvelopeToggleLabel');
+    var toggleIcon = document.getElementById('balanceEnvelopeToggleIcon');
+    var dropdown = document.getElementById('balanceEnvelopeDropdown');
+    var toggle = document.getElementById('balanceEnvelopeToggle');
+    if (hiddenSelect) hiddenSelect.value = id;
+    if (toggleLabel) toggleLabel.textContent = label;
+    if (toggleIcon) toggleIcon.innerHTML = icon ? getIconSVG(icon, 18) : '';
+    if (dropdown) dropdown.classList.remove('open');
+    if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    renderBalanceChart();
 }
 
 function getEnvelopesByFilters() {
@@ -2982,13 +3159,13 @@ function renderHistoryMainList() {
         var dt = new Date(firstTx.date);
         var ds = dt.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' }) + ' в ' + dt.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
         var user = getUserById(firstTx.userId);
-        var userName = user ? user.emoji + ' ' + user.name : firstTx.userId;
+        var userName = user ? getIconSVG(user.emoji, 16) + ' ' + escapeHtml(user.name) : escapeHtml(firstTx.userId);
         
         var div = document.createElement('div');
         div.className = 'history-item history-item-parent';
         div.innerHTML = '<div style="flex: 1;">' +
             '<div class="history-item-header">' +
-                '<div class="history-item-icon put">➕</div>' +
+                '<div class="history-item-icon put">' + getIconSVG('➕', 17) + '</div>' +
                 '<div>' +
                     '<div class="history-item-title" style="color: var(--success);">Пополнение</div>' +
                     '<div class="history-item-meta">' + userName + ' • ' + ds + '</div>' +
@@ -3014,7 +3191,7 @@ function renderHistoryMainList() {
         // Добавляем заголовок "Распределение" при раскрытии
         var headerDiv = document.createElement('div');
         headerDiv.className = 'history-item-child-header';
-        headerDiv.innerHTML = '<span style="font-size: 11px; color: var(--text-secondary); font-weight: 600;">💰 Распределение по ' + group.length + ' конверт' + (group.length > 1 ? 'ам' : 'у') + '</span>';
+        headerDiv.innerHTML = '<span style="font-size: 11px; color: var(--text-secondary); font-weight: 600;">Распределение по ' + group.length + ' конверт' + (group.length > 1 ? 'ам' : 'у') + '</span>';
         childrenDiv.appendChild(headerDiv);
 
         group.forEach(function(tx) {
@@ -3023,7 +3200,7 @@ function renderHistoryMainList() {
             var env = state.envelopes.find(function(e) { return e.id === tx.to; });
             var envName = tx.toName || (env ? env.name : 'Неизвестно');
             var envIcon = env ? (env.icon || '📁') : '';
-            childDiv.innerHTML = '<span class="history-item-child-name">' + envIcon + ' ' + escapeHtml(envName) + '</span>' +
+            childDiv.innerHTML = '<span class="history-item-child-name">' + getIconSVG(envIcon, 18) + ' ' + escapeHtml(envName) + '</span>' +
                 '<span class="history-item-child-amount">+' + formatMoney(tx.amount) + '</span>';
             childrenDiv.appendChild(childDiv);
         });
@@ -3052,11 +3229,11 @@ function renderHistoryMainList() {
         else if (tx.type === 'delete') { icon = '🗑️'; iconClass = 'delete'; color = 'var(--gray-500)'; title = 'Удаление "' + fromName + '"'; amountClass = 'negative'; amountPrefix = '-'; }
         else if (tx.type === 'manual_adjust') { icon = '🔧'; iconClass = 'manual'; color = 'var(--gray-500)'; title = 'Ручная корректировка "' + toName + '"'; amountClass = tx.amount > 0 ? 'positive' : 'negative'; amountPrefix = tx.amount > 0 ? '+' : '-'; }
         var user = getUserById(tx.userId);
-        var userName = user ? user.emoji + ' ' + user.name : tx.userId;
-        var commentHtml = tx.comment ? '<div class="history-item-comment">💬 ' + escapeHtml(tx.comment) + '</div>' : '';
+        var userName = user ? getIconSVG(user.emoji, 16) + ' ' + escapeHtml(user.name) : escapeHtml(tx.userId);
+        var commentHtml = tx.comment ? '<div class="history-item-comment">' + escapeHtml(tx.comment) + '</div>' : '';
         div.innerHTML = '<div style="flex: 1;">' +
             '<div class="history-item-header">' +
-                '<div class="history-item-icon ' + iconClass + '">' + icon + '</div>' +
+                '<div class="history-item-icon ' + iconClass + '">' + getIconSVG(icon, 17) + '</div>' +
                 '<div>' +
                     '<div class="history-item-title" style="color: ' + color + ';">' + title + '</div>' +
                     '<div class="history-item-meta">' + userName + ' • ' + ds + '</div>' +
@@ -3084,7 +3261,7 @@ function renderHistoryMainList() {
 function openEnvelopeHistory() {
     var env = state.envelopes.find(function(e) { return e.id === currentEnvelopeId; });
     if (!env) return;
-    document.getElementById('envelopeHistoryTitle').textContent = '📜 История: ' + env.name;
+    document.getElementById('envelopeHistoryTitle').textContent = 'История: ' + env.name;
     var c = document.getElementById('envelopeHistoryList');
     if (!c) return;
     c.innerHTML = '';
@@ -3110,8 +3287,8 @@ function openEnvelopeHistory() {
                 else if (tx.type === 'transfer') { icon = ''; desc = 'В "' + toName + '"'; }
                 else if (tx.type === 'delete') { icon = '🗑️'; desc = 'Удаление'; }
             }
-            var ch = tx.comment ? '<div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">💬 ' + escapeHtml(tx.comment) + '</div>' : '';
-            div.innerHTML = '<div style="flex: 1;"><div style="font-weight: 600; font-size: 14px; color: ' + color + ';">' + icon + ' ' + desc + '</div><div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">' + ds + '</div>' + ch + '</div><div style="font-weight: 700; font-size: 15px; color: ' + color + '; margin-left: 12px;">' + (pos ? '+' : '-') + formatMoney(tx.amount) + '</div>';
+            var ch = tx.comment ? '<div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">' + escapeHtml(tx.comment) + '</div>' : '';
+            div.innerHTML = '<div style="flex: 1;"><div style="display:flex;align-items:center;gap:6px;font-weight:600;font-size:14px;color:' + color + ';">' + (icon ? getIconSVG(icon, 16) : '') + '<span>' + desc + '</span></div><div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">' + ds + '</div>' + ch + '</div><div style="font-weight: 700; font-size: 15px; color: ' + color + '; margin-left: 12px;">' + (pos ? '+' : '-') + formatMoney(tx.amount) + '</div>';
             c.appendChild(div);
         });
     }
